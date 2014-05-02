@@ -1,14 +1,15 @@
 
 from google.appengine.ext import endpoints
 from google.appengine.ext import ndb
-from messages import ItemMessage, ItemMessageCollection
+from messages import ItemMessage, ItemMessageCollection, UserMessage, UserMessageCollection
 
 class Item(ndb.Model):    
     title = ndb.StringProperty(indexed=False)
     description = ndb.StringProperty(indexed=False)
-    expiration = ndb.StringProperty(indexed=False)
+    expiration = ndb.DateTimeProperty(indexed=False)
     price = ndb.StringProperty(indexed=False)
-    owner = ndb.StringProperty(indexed=False)
+    owner = ndb.KeyProperty(kind="User")
+    created_at = ndb.DateTimeProperty(auto_now_add=True)
 
     def to_message(self):
         return ItemMessage(
@@ -16,7 +17,7 @@ class Item(ndb.Model):
             description=self.description,
             expiration=self.expiration,
             price=self.price,
-            owner=self.owner,
+            owner=self.owner.to_message(),
             item_id=str(self.key.id()))
 
     @classmethod
@@ -32,12 +33,36 @@ class Item(ndb.Model):
 
 
 class User(ndb.Model):
-    email = ndb.StringProperty(indexed=False)
+    email = ndb.StringProperty(indexed=True)
     name = ndb.StringProperty(indexed=False)
     description = ndb.StringProperty(indexed=False)
     image_url = ndb.StringProperty(indexed=False)
     tag = ndb.StringProperty(indexed=False)
-    disabled = ndb.StringProperty(indexed=False)
+    disabled = ndb.BooleanProperty(indexed=False)
+
+    def to_message(self):
+        return UserMessage(
+            email=self.email,
+            name=self.name,
+            description=self.description,
+            image_url=self.image_url,
+            tag=self.tag,
+            disabled=self.disabled)
+
+    @classmethod
+    def to_message_collection(Item, users):
+        userMessages = []
+        for user in users:
+            userMessages.append(user.to_message())
+
+        return UserMessageCollection(
+            code="OK",
+            message="OK",
+            data=userMessages)
+
+    @classmethod
+    def get_current_user(self):
+        return User.query(User.email == endpoints.get_current_user().email()).get().key
 
 
 class Comm(ndb.Model):

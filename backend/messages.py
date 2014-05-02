@@ -9,15 +9,33 @@ class ItemMessage(messages.Message):
     description = messages.StringField(3)
     expiration = messages.StringField(4)
     price = messages.StringField(5)
-    owner = messages.StringField(6)
+    owner = messages.MessageField("UserMessage", 6)
     item_id = messages.StringField(7)
 
+
 class ItemMessageCollection(messages.Message):
-	message = messages.StringField(1)
-	code = messages.StringField(2)
-	data = messages.MessageField(ItemMessage, 3, repeated=True)
+    message = messages.StringField(1)
+    code = messages.StringField(2)
+    data = messages.MessageField(ItemMessage, 3, repeated=True)
+
 
 class BaseMessage(messages.Message):
-	message = messages.StringField(1)
-	code = messages.StringField(2)
-	data = messages.StringField(3)
+    message = messages.StringField(1)
+    code = messages.StringField(2)
+    data = messages.StringField(3)
+
+
+class UserMessage(messages.Message):
+    user_id = messages.StringField(1)
+    email = messages.StringField(2)
+    name = messages.StringField(3)
+    description = messages.StringField(4)
+    image_url = messages.StringField(5)
+    tag = messages.StringField(6)
+    disabled = messages.StringField(7)
+
+
+class UserMessageCollection(messages.Message):
+    message = messages.StringField(1)
+    code = messages.StringField(2)
+    data = messages.MessageField(UserMessage, 3, repeated=True)
