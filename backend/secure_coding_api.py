@@ -6,6 +6,7 @@ as well as those methods defined in an API.
 
 
 import endpoints
+from google.appengine.ext import endpoints
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
@@ -26,6 +27,12 @@ hardcode = endpoints.api(name='hardcode', version='v1',
                audiences=[ANDROID_AUDIENCE],
                scopes=[endpoints.EMAIL_SCOPE])
 
+def check_signed_in():
+    current_user = endpoints.get_current_user()
+
+    if current_user is None:
+        raise endpoints.UnauthorizedException('Invalid token.')
+
 @hardcode.api_class(resource_name='itemsApi', path="items")
 class ItemsApi(remote.Service):
 
@@ -42,6 +49,7 @@ class ItemsApi(remote.Service):
                       path='item/add', http_method='POST',
                       name='items.addItem')
     def addItem_post(self, request):
+    	check_signed_in();
         item=Item(
         	title=request.title,
         	description=request.description,
@@ -77,6 +85,7 @@ class ItemsApi(remote.Service):
                       path='item/del/{id}', http_method='POST',
                       name='items.delItem')
     def delItem_post(self, request):
+    	check_signed_in()
         item = Item.get_by_id(request.id)
     	
     	if (item):
