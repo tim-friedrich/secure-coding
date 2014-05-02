@@ -47,7 +47,7 @@ class HelloWorldApi(remote.Service):
             times=messages.IntegerField(2, variant=messages.Variant.INT32,
                                         required=True))
 
-    @endpoints.method(MULTIPLY_METHOD_RESOURCE, Greeting,
+    @endpoints.method(MULTIPLY_METHOD_RESOURCE, Item,
                       path='hellogreeting/{times}', http_method='POST',
                       name='greetings.multiply')
     def greetings_multiply(self, request):
@@ -72,7 +72,7 @@ class HelloWorldApi(remote.Service):
         except (IndexError, TypeError):
             raise endpoints.NotFoundException('Greeting %s not found.' %
                                               (request.id,))
-            
+
     @endpoints.method(message_types.VoidMessage, Greeting,
                       path='hellogreeting/authed', http_method='POST',
                       name='greetings.authed')
