@@ -20,7 +20,11 @@ IOS_CLIENT_ID = 'replace this with your iOS client ID'
 ANDROID_AUDIENCE = WEB_CLIENT_ID
 
 
-hardcode = endpoints.api(name='hardcode', version='v1')
+hardcode = endpoints.api(name='hardcode', version='v1',
+               allowed_client_ids=[WEB_CLIENT_ID, ANDROID_CLIENT_ID,
+                                   IOS_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
+               audiences=[ANDROID_AUDIENCE],
+               scopes=[endpoints.EMAIL_SCOPE])
 
 @hardcode.api_class(resource_name='itemsApi', path="items")
 class ItemsApi(remote.Service):
@@ -34,7 +38,7 @@ class ItemsApi(remote.Service):
             ItemMessageCollection)
 
     #missing protection
-    @endpoints.method(message_types.VoidMessage, BaseMessage,
+    @endpoints.method(ITEMS_RESOURCE, BaseMessage,
                       path='item/add', http_method='POST',
                       name='items.addItem')
     def addItem_post(self, request):
@@ -43,8 +47,7 @@ class ItemsApi(remote.Service):
         	description=request.description,
         	expiration=request.expiration,
         	price=request.price,
-        	owner=request.owner,
-        	item_id=request.item_id)
+        	owner=request.owner)
         key = item.put()
         return BaseMessage(message="OK", code="OK", data=str(key.id()))
 
