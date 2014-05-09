@@ -1,7 +1,8 @@
 
 from google.appengine.ext import endpoints
 from google.appengine.ext import ndb
-from messages import ItemMessage, ItemMessageCollection, UserMessage, UserMessageCollection
+from messages import ItemMessage, ItemMessageCollection, UserMessage, \
+    UserMessageCollection, CommMessage, CommMessageCollection
 
 class Item(ndb.Model):    
     title = ndb.StringProperty(indexed=False)
@@ -39,6 +40,7 @@ class User(ndb.Model):
     image_url = ndb.StringProperty(indexed=False)
     tag = ndb.StringProperty(indexed=False)
     disabled = ndb.BooleanProperty(indexed=False)
+    created_at = ndb.DateTimeProperty(auto_now_add=True)
 
     def to_message(self):
         return UserMessage(
@@ -62,18 +64,51 @@ class User(ndb.Model):
 
     @classmethod
     def get_current_user(self):
-        return User.query(User.email == endpoints.get_current_user().email()).get().key
+        if endpoints.get_current_user() is not None:
+            user = User.query(User.email == endpoints.get_current_user().email()).get()
+            if user is not None:
+                return user.key
+            else:
+                return False
+        else:
+            return False
 
 
 class Comm(ndb.Model):
     subject = ndb.StringProperty(indexed=False)
-    sender = ndb.StringProperty(indexed=False)
-    receiver = ndb.StringProperty(indexed=False)
-    timestamp = ndb.StringProperty(indexed=False)
+    sender = ndb.FloatProperty(indexed=False)
+    #multiple receiver
+    receiver = ndb.FloatProperty(indexed=False)
+    timestamp = ndb.DateTimeProperty(auto_now_add=True)
     content = ndb.StringProperty(indexed=False)
     item_id = ndb.StringProperty(indexed=False)
     item_title = ndb.StringProperty(indexed=False)
     price = ndb.StringProperty(indexed=False)
+    created_at = ndb.DateTimeProperty(auto_now_add=True)
+
+    def to_message(self):
+        return CommMessage(
+            subject=self.subject,
+            sender=self.sender,
+            #multiple receiver
+            receiver=self.receiver,
+            timestamp=self.timestamp,
+            content=self.content,
+            item_id=self.item_id,
+            item_title=self.item_title,
+            price=self.price,
+            created_at=self.created_at)
+
+    @classmethod
+    def to_message_collection(Comm, comms):
+        commMessages = []
+        for comm in comms:
+            commMessages.append(comm.to_message())
+
+        return CommMessageCollection(
+            code="OK",
+            message="OK",
+            data=commMessages)
 
 
 class Transaction(ndb.Model):
@@ -87,6 +122,7 @@ class Transaction(ndb.Model):
     transaction_id = ndb.StringProperty(indexed=False)
     feedback_item = ndb.StringProperty(indexed=False)
     feedback_seller = ndb.StringProperty(indexed=False)
+    created_at = ndb.DateTimeProperty(auto_now_add=True)
 
 
 class Feedback(ndb.Model):
@@ -97,4 +133,4 @@ class Feedback(ndb.Model):
     item_id = ndb.StringProperty(indexed=False)
     seller_uid = ndb.StringProperty(indexed=False)
     transaction_id = ndb.StringProperty(indexed=False)
-
+    created_at = ndb.DateTimeProperty(auto_now_add=True)

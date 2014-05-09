@@ -39,3 +39,20 @@ class UserMessageCollection(messages.Message):
     message = messages.StringField(1)
     code = messages.StringField(2)
     data = messages.MessageField(UserMessage, 3, repeated=True)
+
+
+class CommMessage(messages.Message):
+    subject = messages.StringField(1)
+    sender = messages.StringField(2)
+    receiver = messages.StringField(3)
+    timestamp = messages.StringField(4)
+    content = messages.StringField(5)
+    item_id = messages.StringField(6)
+    item_title = messages.StringField(7)
+    price = messages.StringField(8)
+
+
+class CommMessageCollection(messages.Message):
+    message = messages.StringField(1)
+    code = messages.StringField(2)
+    data = messages.MessageField(CommMessage, 3, repeated=True)

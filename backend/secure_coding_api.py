@@ -10,8 +10,9 @@ from google.appengine.ext import endpoints
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
-from messages import UserMessageCollection, UserMessage, ItemMessage, ItemMessageCollection, BaseMessage
-from models import User, Item
+from messages import UserMessageCollection, UserMessage, ItemMessage, ItemMessageCollection, \
+    BaseMessage, CommMessage, CommMessageCollection
+from models import User, Item, Comm
 
 package = 'SecureCoding'
 
@@ -30,7 +31,7 @@ hardcode = endpoints.api(name='hardcode', version='v1',
 def check_signed_in():
     current_user = User.get_current_user()
 
-    if endpoints.get_current_user() is None or User.get_current_user() is None:
+    if not User.get_current_user():
         raise endpoints.UnauthorizedException('Invalid token.')
     else:
         return current_user
@@ -119,7 +120,7 @@ class Users(remote.Service):
                       path='user/add', http_method='POST',
                       name='addUsers')
     def add_user_post(self, request):
-        check_signed_in()
+        #check if email already exists
         user = User(
             email=endpoints.get_current_user().email(),
             name=request.name,
@@ -149,6 +150,7 @@ class Users(remote.Service):
                       path='users', http_method='GET',
                       name='listUsers')
     def list_users_get(self, request):
+        check_signed_in()
         return User.to_message_collection(User.query())
 
     @endpoints.method(ID_RESOURCE, BaseMessage,
@@ -159,8 +161,8 @@ class Users(remote.Service):
         check_signed_in()
         user = User.get_by_id(request.id)
 
-        if user and user == User.query(User.email == endpoints.get_current_user()).get():
-            user.delete()
+        if user and user == User.query(User.email == endpoints.get_current_user().email()).get():
+            user.key.delete()
             return BaseMessage(message="OK", code="OK", data="User deleted")
         else:
             raise endpoints.NotFoundException('Item %s not found.' %
@@ -181,5 +183,72 @@ class Search(remote.Service):
                       name='query')
     def query_get(self, request):
         return User.to_message_collection(User.query())
+
+
+@hardcode.api_class(resource_name='comms', path="users")
+class Comms(remote.Service):
+    ##Item api
+    COMMS_RESOURCE = endpoints.ResourceContainer(
+            CommMessage)
+
+    COMMS_COLLECTION_RESOURCE = endpoints.ResourceContainer(
+            CommMessageCollection)
+
+    @endpoints.method(COMMS_RESOURCE, BaseMessage,
+                      path='comm/add', http_method='POST',
+                      name='addComm')
+    def add_comm_post(self, request):
+        check_signed_in()
+        comm = Comm(
+            subject=request.subject,
+            sender=User.get_current_user().id(),
+            receiver=request.receiver,
+            content=request.content,
+            item_id=request.item_id,
+            item_title=request.item_title,
+            price=request.price)
+        key = comm.put()
+        return BaseMessage(message="OK", code="OK", data=str(key.id()))
+
+    ID_RESOURCE = endpoints.ResourceContainer(
+        message_types.VoidMessage,
+        id=messages.IntegerField(1, variant=messages.Variant.INT32))
+
+    @endpoints.method(ID_RESOURCE, CommMessageCollection,
+                      path='comm/{id}', http_method='GET',
+                      name='getComm')
+    def comm_get(self, request):
+        user = check_signed_in()
+        comm = Comm.get_by_id(request.id)
+        #multiple receivers...
+
+        if comm and (user == comm.sender or user == comm.receiver):
+            return Comm.to_message_collection([comm])
+        else:
+            raise endpoints.NotFoundException('Item %s not found.' %
+                                                  (request.id,))
+
+    @endpoints.method(message_types.VoidMessage, CommMessageCollection,
+                      path='comms', http_method='GET',
+                      name='listComm')
+    def list_comms_get(self, request):
+        #missing filter
+        return Comm.to_message_collection(Comm.query())
+
+    @endpoints.method(ID_RESOURCE, BaseMessage,
+                      path='comm/del/{id}', http_method='POST',
+                      name='delComm')
+    def del_comm_post(self, request):
+        #delete Users Items?
+        user = check_signed_in()
+        comm = Comm.get_by_id(request.id)
+
+        if comm and comm.sender == User.query(User.email == endpoints.get_current_user()).get():
+            comm.delete()
+            return BaseMessage(message="OK", code="OK", data="User deleted")
+        else:
+            raise endpoints.NotFoundException('Item %s not found.' %
+                                              (request.id,))
+
 
 APPLICATION = endpoints.api_server([hardcode])
