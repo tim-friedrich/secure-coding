@@ -27,11 +27,14 @@ google.appengine.secure.shop.init = function(apiRoot) {
   var callback = function() {
     if (--apisToLoad == 0) {
       google.appengine.secure.shop.enableButtons();
+      google.appengine.secure.shop.signin(true,
+          google.appengine.secure.shop.userAuthed)
     }
   }
 
-  apisToLoad = 1; // must match number of calls to gapi.client.load()
+  apisToLoad = 2; // must match number of calls to gapi.client.load()
   gapi.client.load('hardcode', 'v1', callback, apiRoot);
+  gapi.client.load('oauth2', 'v2', callback);
 };
 
 /**
@@ -47,6 +50,9 @@ google.appengine.secure.shop.enableButtons = function() {
   var listItems = document.querySelector('#listItems');
   listItems.addEventListener('click',
       google.appengine.secure.shop.listItems);
+
+  var signinButton = document.querySelector('#signinButton');
+  signinButton.addEventListener('click', google.appengine.secure.shop.auth);
 
 };
 
@@ -89,4 +95,68 @@ google.appengine.secure.shop.listItems = function() {
           }
         }
       });
+};
+
+/**
+ * Client ID of the application (from the APIs Console).
+ * @type {string}
+ */
+google.appengine.secure.shop.CLIENT_ID =
+    '142521807042.apps.googleusercontent.com';
+
+google.appengine.secure.shop.LOCAL_CLIENT_ID =
+    '142521807042-l2afethj1qsrj64hecteq6rdth0qngrm.apps.googleusercontent.com';
+
+/**
+ * Scopes used by the application.
+ * @type {string}
+ */
+google.appengine.secure.shop.SCOPES =
+    'https://www.googleapis.com/auth/userinfo.email';
+
+/**
+ * Handles the auth flow, with the given value for immediate mode.
+ * @param {boolean} mode Whether or not to use immediate mode.
+ * @param {Function} callback Callback to call on completion.
+ */
+google.appengine.secure.shop.signin = function(mode, callback) {
+  gapi.auth.authorize({client_id: google.appengine.secure.shop.CLIENT_ID,
+      scope: google.appengine.secure.shop.SCOPES, immediate: mode},
+      callback);
+  gapi.auth.authorize({client_id: google.appengine.secure.shop.LOCAL_CLIENT_ID,
+      scope: google.appengine.secure.shop.SCOPES, immediate: mode},
+      callback);
+};
+
+/**
+ * Presents the user with the authorization popup.
+ */
+google.appengine.secure.shop.auth = function() {
+  if (!google.appengine.secure.shop.signedIn) {
+    google.appengine.secure.shop.signin(false,
+        google.appengine.secure.shop.userAuthed);
+  } else {
+    google.appengine.secure.shop.signedIn = false;
+    document.querySelector('#signinButton').textContent = 'Sign in';
+    document.querySelector('#authedGreeting').disabled = true;
+  }
+};
+
+/**
+ * Whether or not the user is signed in.
+ * @type {boolean}
+ */
+google.appengine.secure.shop.signedIn = false;
+
+/**
+ * Loads the application UI after the user has completed auth.
+ */
+google.appengine.secure.shop.userAuthed = function() {
+  var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
+    if (!resp.code) {
+      google.appengine.secure.shop.signedIn = true;
+      document.querySelector('#signinButton').textContent = 'Sign out';
+      document.querySelector('#authedGreeting').disabled = false;
+    }
+  });
 };

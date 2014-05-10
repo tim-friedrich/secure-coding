@@ -16,15 +16,13 @@ from models import User, Item, Comm
 
 package = 'SecureCoding'
 
-WEB_CLIENT_ID = 'replace this with your web client application ID'
-ANDROID_CLIENT_ID = 'replace this with your Android client ID'
-IOS_CLIENT_ID = 'replace this with your iOS client ID'
+WEB_CLIENT_ID = '142521807042.apps.googleusercontent.com'
+LOCAL_CLIENT_ID = '142521807042-l2afethj1qsrj64hecteq6rdth0qngrm.apps.googleusercontent.com'
 ANDROID_AUDIENCE = WEB_CLIENT_ID
 
 
 hardcode = endpoints.api(name='hardcode', version='v1',
-                        allowed_client_ids=[WEB_CLIENT_ID, ANDROID_CLIENT_ID,
-                                   IOS_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
+                        allowed_client_ids=[WEB_CLIENT_ID, LOCAL_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
                         audiences=[ANDROID_AUDIENCE],
                         scopes=[endpoints.EMAIL_SCOPE])
 
