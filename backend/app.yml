@@ -6,6 +6,15 @@ api_version: 1
 
 handlers:
 # Endpoints handler
+- url: /js
+  static_dir: ../client/js
+- url: /bootstrap
+  static_dir: ../client/lib/bootstrap-3.1.1-dist
+- url: /
+  static_files: ../client/templates/index.html
+  upload: templates/index\.html
+- url: /css
+  static_dir: ../client/css
 - url: /_ah/spi/.*
   script: secure_coding_api.APPLICATION
 

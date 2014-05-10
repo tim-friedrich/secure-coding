@@ -1,0 +1,6 @@
+#content {
+    width: 1024px;
+}
+#content > .jumbotron{
+    text-align: center;
+}
