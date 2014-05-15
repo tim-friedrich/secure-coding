@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello Endpoints!</title>
+    <script async src="/js/base.js"></script>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Secure-Coding Shop</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="form-inline navbar-form navbar-right">
+                <button type="submit" class="btn btn-default" id="signinButton">Sign in</button>
+            </form>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    <div id="content" class="center-block">
+        <div class="jumbotron">
+            <h1>Welcome to the secure shop!</h1>
+            <p>Please use the search function to search for Items</p>
+
+                    <div class="input-group">
+                        <input  type="text" class="form-control input-lg">
+                        <span class="input-group-btn">
+                            <button class="btn btn-lg" type="button" id="listItems">Search</button>
+                        </span>
+                    </div><!-- /input-group -->
+            <h3>or</h3>
+            <button type="button" class="btn btn-primary btn-lg">Sign up</button>
+            <script>
+                function init() {
+                    google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api');
+                }
+            </script>
+            <script src="https://apis.google.com/js/client.js?onload=init"></script>
+        </div>
+    </div>
+</body>
+</html>
