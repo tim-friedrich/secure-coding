@@ -14,7 +14,7 @@ body {
 }
 
 #content {
-    width: 100%;
+    width: 1024px;
 }
 #content > .jumbotron{
     text-align: center;
@@ -56,20 +56,21 @@ nav ul li a {
   color: #ffffff;  
   margin-left: 1px;
   white-space: nowrap;
-  height: 30px;
+  height: 40px;
   width: 90px;
   text-align: center;
  
 }
  
 nav ul li a:hover { 
-  background: #f6a800; 
+  background: #f6a800;
+  text-decoration:none;
 }
  
 nav li:hover ul {
   display: block;
   position: absolute;
-  height:30px;
+  height:40px;
 }
  
 nav li:hover li {
@@ -79,16 +80,23 @@ nav li:hover li {
 }
  
 nav li:hover a { 
-  background: #3A464F; 
-  height:30px;
+  background: #3A464F;
+  height:40px;
 }
  
 nav li:hover li a:hover { 
-  background: #f6a800; 
+  background: #f6a800;
 }
  
 nav ul li ul li a {
     text-align:left;
+}
+
+nav ul li a{
+    width: 120px;
+    height: 40px;
+    padding: 7px 0px 0px 1px;
+    margin: 0px;
 }
 
 /* Item detail */
