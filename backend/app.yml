@@ -13,6 +13,9 @@ handlers:
 - url: /
   static_files: ../client/templates/index.html
   upload: templates/index\.html
+- url: /add_item
+  static_files: ../client/templates/add_item.html
+  upload: templates/add_item\.html
 - url: /css
   static_dir: ../client/css
 - url: /_ah/spi/.*
