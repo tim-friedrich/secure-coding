@@ -17,7 +17,7 @@ from models import User, Item, Comm
 package = 'SecureCoding'
 
 WEB_CLIENT_ID = '142521807042.apps.googleusercontent.com'
-LOCAL_CLIENT_ID = '142521807042-l2afethj1qsrj64hecteq6rdth0qngrm.apps.googleusercontent.com'
+LOCAL_CLIENT_ID = '142521807042-f6qni9r0isipad8nldolobfvtdm64j58.apps.googleusercontent.com'
 ANDROID_AUDIENCE = WEB_CLIENT_ID
 
 
@@ -54,7 +54,8 @@ class Items(remote.Service):
             description=request.description,
             expiration=request.expiration,
             price=request.price,
-            owner=User.get_current_user())
+            owner=User.get_current_user()
+        )
         key = item.put()
         return BaseMessage(message="OK", code="OK", data=str(key.id()))
 

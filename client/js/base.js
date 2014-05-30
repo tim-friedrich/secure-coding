@@ -26,11 +26,12 @@ google.appengine.secure.shop.init = function(apiRoot, callback) {
   // when they have completed.
   var apisToLoad;
 
-  api_ready = function() {
+  var api_ready = function() {
     if (--apisToLoad == 0) {
+        //google.appengine.secure.shop.auth();
         google.appengine.secure.shop.signin(true,
-            google.appengine.secure.shop.userAuthed)
-        callback()
+            google.appengine.secure.shop.userAuthed);
+        callback();
         }
   }
 
@@ -68,7 +69,7 @@ google.appengine.secure.shop.CLIENT_ID =
     '142521807042.apps.googleusercontent.com';
 
 google.appengine.secure.shop.LOCAL_CLIENT_ID =
-    '142521807042-n6ahe8acl7vnc1ocnar4cljeg3trcqei.apps.googleusercontent.com';
+    '142521807042-f6qni9r0isipad8nldolobfvtdm64j58.apps.googleusercontent.com';
 
 /**
  * Scopes used by the application.
@@ -83,12 +84,11 @@ google.appengine.secure.shop.SCOPES =
  * @param {Function} callback Callback to call on completion.
  */
 google.appengine.secure.shop.signin = function(mode, callback) {
-  //gapi.auth.authorize({client_id: google.appengine.secure.shop.CLIENT_ID,
-  //    scope: google.appengine.secure.shop.SCOPES, immediate: mode},
-  //   callback);
   gapi.auth.authorize({client_id: google.appengine.secure.shop.LOCAL_CLIENT_ID,
       scope: google.appengine.secure.shop.SCOPES, immediate: mode},
-      callback);
+     callback);
+
+
 };
 
 /**
@@ -98,10 +98,6 @@ google.appengine.secure.shop.auth = function() {
   if (!google.appengine.secure.shop.signedIn) {
     google.appengine.secure.shop.signin(false,
         google.appengine.secure.shop.userAuthed);
-  } else {
-    google.appengine.secure.shop.signedIn = false;
-    document.querySelector('#signinButton').textContent = 'Sign in';
-    document.querySelector('#authedGreeting').disabled = true;
   }
 };
 
@@ -118,8 +114,7 @@ google.appengine.secure.shop.userAuthed = function() {
   var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
     if (!resp.code) {
       google.appengine.secure.shop.signedIn = true;
-      document.querySelector('#signinButton').textContent = 'Sign out';
-      document.querySelector('#authedGreeting').disabled = false;
+      $('#signinButton').hide();
     }
   });
 };
