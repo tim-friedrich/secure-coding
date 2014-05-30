@@ -6,20 +6,27 @@ api_version: 1
 
 handlers:
 # Endpoints handler
+
+- url: /_ah/spi/.*
+  script: secure_coding_api.APPLICATION
+
+#routing
+
+#assets
 - url: /js
   static_dir: ../client/js
 - url: /bootstrap
   static_dir: ../client/lib/bootstrap-3.1.1-dist
-- url: /
-  static_files: ../client/templates/index.html
-  upload: templates/index\.html
-- url: /add_item
-  static_files: ../client/templates/add_item.html
-  upload: templates/add_item\.html
 - url: /css
   static_dir: ../client/css
-- url: /_ah/spi/.*
-  script: secure_coding_api.APPLICATION
+- url: /lib
+  static_dir: ../client/lib
+#pages
+- url: /
+  static_files: ../client/index.html
+  upload: index\.html
+- url: /pages
+  static_dir: ../client/pages
 
 libraries:
 - name: pycrypto

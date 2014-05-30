@@ -10,7 +10,8 @@ class ItemMessage(messages.Message):
     expiration = messages.StringField(4)
     price = messages.StringField(5)
     owner = messages.MessageField("UserMessage", 6)
-    item_id = messages.StringField(7)
+    created_at = messages.StringField(7)
+    item_id = messages.StringField(8)
 
 
 class ItemMessageCollection(messages.Message):

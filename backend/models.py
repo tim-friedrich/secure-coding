@@ -16,10 +16,11 @@ class Item(ndb.Model):
         return ItemMessage(
             title=self.title,
             description=self.description,
-            expiration=self.expiration,
+            expiration=str(self.expiration),
             price=self.price,
-            owner=self.owner.to_message(),
-            item_id=str(self.key.id()))
+            owner=self.owner.get().to_message(),
+            item_id=str(self.key.id()),
+            created_at=str(self.created_at))
 
     @classmethod
     def to_message_collection(Item, items):
@@ -69,7 +70,8 @@ class User(ndb.Model):
             if user is not None:
                 return user.key
             else:
-                return False
+                user = User(email=endpoints.get_current_user().email())
+                return user.put()
         else:
             return False
 

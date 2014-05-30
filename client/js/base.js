@@ -16,57 +16,30 @@ google.appengine.secure = google.appengine.secure || {};
 /** hello namespace for this sample. */
 google.appengine.secure.shop = google.appengine.secure.shop || {};
 
+
 /**
  * Initializes the application.
  * @param {string} apiRoot Root of the API's path.
  */
-google.appengine.secure.shop.init = function(apiRoot) {
+google.appengine.secure.shop.init = function(apiRoot, callback) {
   // Loads the OAuth and helloworld APIs asynchronously, and triggers login
   // when they have completed.
   var apisToLoad;
-  var callback = function() {
+
+  api_ready = function() {
     if (--apisToLoad == 0) {
-      google.appengine.secure.shop.enableButtons();
-      google.appengine.secure.shop.signin(true,
-          google.appengine.secure.shop.userAuthed)
-    }
+        google.appengine.secure.shop.signin(true,
+            google.appengine.secure.shop.userAuthed)
+        callback()
+        }
   }
 
+
   apisToLoad = 2; // must match number of calls to gapi.client.load()
-  gapi.client.load('hardcode', 'v1', callback, apiRoot);
-  gapi.client.load('oauth2', 'v2', callback);
+  gapi.client.load('hardcode', 'v1', api_ready, apiRoot);
+  gapi.client.load('oauth2', 'v2', api_ready);
 };
 
-/**
- * Enables the button callbacks in the UI.
- */
-google.appengine.secure.shop.enableButtons = function() {
-/*  var getItem = document.querySelector('#getGreeting');
-  getItem.addEventListener('click', function(e) {
-    google.appengine.secure.shop.getItem(
-        document.querySelector('#id').value);
-  });
-*/
-  var listItems = document.querySelector('#listItems');
-  listItems.addEventListener('click',
-      google.appengine.secure.shop.listItems);
-
-  var signinButton = document.querySelector('#signinButton');
-  signinButton.addEventListener('click', google.appengine.secure.shop.auth);
-
-};
-
-/**
- * Prints a greeting to the greeting log.
- * param {Object} greeting Greeting to print.
- */
-
-google.appengine.secure.shop.print = function(item) {
-  var element = document.createElement('div');
-  element.classList.add('row');
-  element.innerHTML = item.message;
-  document.querySelector('#outputLog').appendChild(element);
-};
 
 /**
  * Gets a numbered greeting via the API.
@@ -85,17 +58,7 @@ google.appengine.secure.shop.getItem = function(id) {
 /**
  * Lists greetings via the API.
  */
-google.appengine.secure.shop.listItems = function() {
-  gapi.client.hardcode.items.listItems().execute(
-      function(resp) {
-        if (!resp.code) {
-          resp.items = resp.items || [];
-          for (var i = 0; i < resp.items.length; i++) {
-            google.appengine.secure.shop.print(resp.items[i]);
-          }
-        }
-      });
-};
+
 
 /**
  * Client ID of the application (from the APIs Console).
@@ -105,7 +68,7 @@ google.appengine.secure.shop.CLIENT_ID =
     '142521807042.apps.googleusercontent.com';
 
 google.appengine.secure.shop.LOCAL_CLIENT_ID =
-    '142521807042-l2afethj1qsrj64hecteq6rdth0qngrm.apps.googleusercontent.com';
+    '142521807042-n6ahe8acl7vnc1ocnar4cljeg3trcqei.apps.googleusercontent.com';
 
 /**
  * Scopes used by the application.
@@ -120,9 +83,9 @@ google.appengine.secure.shop.SCOPES =
  * @param {Function} callback Callback to call on completion.
  */
 google.appengine.secure.shop.signin = function(mode, callback) {
-  gapi.auth.authorize({client_id: google.appengine.secure.shop.CLIENT_ID,
-      scope: google.appengine.secure.shop.SCOPES, immediate: mode},
-      callback);
+  //gapi.auth.authorize({client_id: google.appengine.secure.shop.CLIENT_ID,
+  //    scope: google.appengine.secure.shop.SCOPES, immediate: mode},
+  //   callback);
   gapi.auth.authorize({client_id: google.appengine.secure.shop.LOCAL_CLIENT_ID,
       scope: google.appengine.secure.shop.SCOPES, immediate: mode},
       callback);

@@ -29,7 +29,7 @@ hardcode = endpoints.api(name='hardcode', version='v1',
 def check_signed_in():
     current_user = User.get_current_user()
 
-    if not User.get_current_user():
+    if not current_user:
         raise endpoints.UnauthorizedException('Invalid token.')
     else:
         return current_user

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello Endpoints!</title>
+
+    <script src="/js/base.js"></script>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/lib/jquery-2.1.1.js"></script>
+    <script src="/js/items.js"></script>
+</head>
+<body>
+    <div id="navigation">
+        <nav>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/search">Search</a></li>
+              <li><a href="/items">Items</a>
+                <ul>
+                    <li><a href="#">Shopping cart</a></li>
+                    <li><a href="#">My items</a></li>
+                    <li><a href="/add_item">Add item</a></li>
+                </ul>
+              </li>
+              <li><a href="/user">User</a>
+                <ul>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/settings">Settings</a></li>
+                </ul>
+              </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div id="content" class="center-block">
+        <h1>Items</h1>
+        <script>
+            function init() {
+                google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', google.appengine.secure.shop.listItems);
+            }
+        </script>
+        <script src="https://apis.google.com/js/client.js?onload=init"></script>
+    </div>
+</body>
+</html>
