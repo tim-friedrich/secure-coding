@@ -1,3 +1,5 @@
+
+
 google.appengine.secure.shop.enableButtons = function() {
 
   var signinButton = document.querySelector('#signinButton');

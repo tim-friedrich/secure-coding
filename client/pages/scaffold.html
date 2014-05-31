@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello Endpoints!</title>
+    <script src="/js/base.js"></script>
+    <script src="/lib/jquery-2.1.1.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/items.js"></script>
+    <script src="/js/add_item.js"></script>
+
+    <link rel="stylesheet" href="/lib/bootstrap-3.1.1-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <div id="navigation">
+        <nav>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/pages/search.html">Search</a></li>
+              <li><a href="/items">Items</a>
+                <ul>
+                    <li><a href="/shopping_card">Shopping cart</a></li>
+                    <li><a href="/pages/my_items.html">My items</a></li>
+                    <li><a href="/items/add">Add item</a></li>
+                </ul>
+              </li>
+              <li><a href="/pages/user.html">User</a>
+                <ul>
+                    <li><a href="/pages/login.html">Login</a></li>
+                    <li><a href="/pages/settings.html">Settings</a></li>
+                </ul>
+              </li>
+              <li class="pull-right">
+                  <a class="btn btn-default btn-lg" id="signinButton">Sign in</a>
+              </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div id="content" class="center-block">
+        {% block content %}{% endblock content %}
+    </div>
+<script src="https://apis.google.com/js/client.js?onload=init"></script>
+</body>
+</html>

@@ -1,61 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hello Endpoints!</title>
-    <script async src="/js/base.js"></script>
-    <script async src="/lib/jquery-2.1.1.js"></script>
-    <script async src="/js/index.js"></script>
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="/css/main.css">
-</head>
-<body>
-    <div id="navigation">
-        <nav>
-            <ul>
-              <li><a href="/">Home</a></li>
-              <li><a href="/pages/search.html">Search</a></li>
-              <li><a href="/pages/items.html">Items</a>
-                <ul>
-                    <li><a href="/pages/shopping_card.html">Shopping cart</a></li>
-                    <li><a href="/pages/my_items.html">My items</a></li>
-                    <li><a href="/pages/add_item.html">Add item</a></li>
-                </ul>
-              </li>
-              <li><a href="/pages/user.html">User</a>
-                <ul>
-                    <li><a href="/pages/login.html">Login</a></li>
-                    <li><a href="/pages/settings.html">Settings</a></li>
-                </ul>
-              </li>
-              <li class="pull-right">
-                  <a class="btn btn-default btn-lg" id="signinButton">Sign in</a>
-              </li>
-            </ul>
-        </nav>
+
+{% extends 'pages/scaffold.html' %}
+{% block content %}
+<div class="jumbotron" xmlns="http://www.w3.org/1999/html">
+<h1>Welcome to the secure shop!</h1>
+<p>Please use the search function to search for Items</p>
+    <div class="input-group">
+        <input  type="text" class="form-control input-lg">
+            <span class="input-group-btn">
+                <button class="btn btn-lg" type="button" id="listItems">Search</button>
+            </span>
+        </input>
     </div>
+    <h3>or</h3>
 
-    <div id="content" class="center-block">
-        <div class="jumbotron">
-            <h1>Welcome to the secure shop!</h1>
-            <p>Please use the search function to search for Items</p>
+    <a class="btn btn-default btn-lg" id="signinButton">Sign in</a>
+</div>
 
-                    <div class="input-group">
-                        <input  type="text" class="form-control input-lg">
-                        <span class="input-group-btn">
-                            <button class="btn btn-lg" type="button" id="listItems">Search</button>
-                        </span>
-                    </div><!-- /input-group -->
-            <h3>or</h3>
-
-            <a class="btn btn-default btn-lg" id="signinButton">Sign in</a>
-
-            <script>
-                function init() {
-                    google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', google.appengine.secure.shop.enableButtons);
-                }
-            </script>
-            <script src="https://apis.google.com/js/client.js?onload=init"></script>
-        </div>
-    </div>
-</body>
-</html>
+<script>
+    function init() {
+        $(document).ready(function(){
+            google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', google.appengine.secure.shop.enableButtons);
+        });
+    }
+</script>
+{% endblock %}

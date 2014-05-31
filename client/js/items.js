@@ -13,7 +13,7 @@ google.appengine.secure.shop.listItems = function() {
 
 google.appengine.secure.shop.renderItem = function(item){
     var item_template =
-        '<div class="item_detail">\
+        '<a href="/items/'+item['item_id']+'"><div class="item_detail">\
 		    <div class="title"></div>\
 			<div class="description"></div>\
 			<div class="price"></div>\
@@ -21,7 +21,7 @@ google.appengine.secure.shop.renderItem = function(item){
 				<div class="sellerName"></div>\
 				<div class="creationTime"></div>\
 			</div>\
-		</div>';
+		</div></a>';
     new_item = $(item_template).clone();
     new_item.find('.title').text(item['title']);
     new_item.find('.description').text(item['description']);
@@ -30,3 +30,19 @@ google.appengine.secure.shop.renderItem = function(item){
     new_item.find('.creationTime').text(item['created_at']);
     return new_item
 };
+
+google.appengine.secure.shop.loadItem = function(){
+    var request = {}
+
+    gapi.client.hardcode.items.getItem({
+        'id': $('#content').attr('data-id')
+    }).execute(function(resp){
+        $content = $('#content');
+        item = resp.data;
+        $content.find('#title').text(item['title']);
+        $content.find('#description').text(item['description']);
+        $content.find('#price').text(item['price']+" $");
+        $content.find('#seller').text(item['owner']['email']);
+        $content.find('#created_at').text(item['created_at']);
+    });
+}

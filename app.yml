@@ -1,0 +1,34 @@
+application: sec-coding-2014
+version: 1
+runtime: python27
+threadsafe: false
+api_version: 1
+
+handlers:
+# Endpoints handler
+
+
+#assets
+- url: /js
+  static_dir: client/js
+- url: /css
+  static_dir: client/css
+- url: /lib
+  static_dir: client/lib
+
+#pages
+- url: /_ah/spi/.*
+  script: backend.secure_coding_api.APPLICATION
+- url: /.*
+  script: client.routing.application
+
+#routing
+libraries:
+- name: pycrypto
+  version: latest
+- name: endpoints
+  version: 1.0
+- name: webapp2
+  version: latest
+- name: jinja2
+  version: latest
