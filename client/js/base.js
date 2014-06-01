@@ -122,5 +122,11 @@ google.appengine.secure.shop.renderLoggedInNav = function () {
         'href',
         '/users/'+google.appengine.secure.shop.currentUser.user_id
     );
+    $('nav').find('#userSettings').attr(
+        'href',
+        '/users/edit/'+google.appengine.secure.shop.currentUser.user_id
+    );
+    var signinButton = document.querySelector('#signinButton');
+    signinButton.addEventListener('click', google.appengine.secure.shop.auth);
 }
 

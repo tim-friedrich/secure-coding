@@ -3,16 +3,18 @@
 Defined here are the ProtoRPC messages needed to define Schemas for methods
 as well as those methods defined in an API.
 """
-
+from datetime import date
 
 import endpoints
 from google.appengine.ext import endpoints
+from google.appengine.ext import ndb
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 from messages import UserMessageCollection, UserMessage, ItemMessage, ItemMessageCollection, \
     BaseMessage, CommMessage, CommMessageCollection
 from models import User, Item, Comm
+from backend.messages import SearchMessage
 
 package = 'SecureCoding'
 
@@ -114,11 +116,12 @@ class Users(remote.Service):
     USERS_COLLECTION_RESOURCE = endpoints.ResourceContainer(
             UserMessageCollection)
 
-    #missing protection (Oauth2????)
+
     @endpoints.method(USERS_RESOURCE, BaseMessage,
                       path='user/add', http_method='POST',
                       name='addUsers')
     def add_user_post(self, request):
+        check_signed_in()
         #check if email already exists
         user = User(
             email=endpoints.get_current_user().email(),
@@ -167,21 +170,39 @@ class Users(remote.Service):
             raise endpoints.NotFoundException('Item %s not found.' %
                                               (request.id,))
 
-    @endpoints.method(ID_RESOURCE, UserMessage,
+    @endpoints.method(USERS_RESOURCE, BaseMessage,
                       path='user/mod', http_method='POST',
                       name='modUser')
     def mod_user_post(self, request):
-        pass
+        user = check_signed_in().get()
+        if user.key.id() == long(request.user_id):
+            user.name = request.name
+            user.description = request.description
+            user.image_url = request.image_url
+            user.put()
 
+            return BaseMessage(message="OK", code="OK", data=str(user.key.id()))
+        else:
+            raise endpoints.UnauthorizedException('')
 
 @hardcode.api_class(resource_name='search', path="search")
 class Search(remote.Service):
-
-    @endpoints.method(message_types.VoidMessage, UserMessageCollection,
+    SEARCH_RESOURCE = endpoints.ResourceContainer(
+            SearchMessage)
+    @endpoints.method(SEARCH_RESOURCE, ItemMessageCollection,
                       path='search/query', http_method='GET',
                       name='query')
     def query_get(self, request):
-        return User.to_message_collection(User.query())
+        items = []
+        for item in Item.query():
+            if((request.query in item.title or
+                    request.query in item.description or
+                    request.query in item.price) and
+                    item.expiration < date.today()):
+                items.append(item)
+
+        return Item.to_message_collection(items)
+
 
 
 @hardcode.api_class(resource_name='comms', path="users")

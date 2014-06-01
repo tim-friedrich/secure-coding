@@ -26,6 +26,10 @@ class BaseMessage(messages.Message):
     data = messages.StringField(3)
 
 
+class SearchMessage(messages.Message):
+    query = messages.StringField(1)
+
+
 class UserMessage(messages.Message):
     user_id = messages.StringField(1)
     email = messages.StringField(2)

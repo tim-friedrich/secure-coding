@@ -38,6 +38,13 @@ class UserPage(webapp2.RequestHandler):
         return self.response
 
 
+class UserEditPage(webapp2.RequestHandler):
+    def get(self, user_id):
+        template = JINJA_ENVIRONMENT.get_template('pages/users/edit.html')
+        self.response.write(template.render({'user_id': user_id}))
+        return self.response
+
+
 
 
 application = webapp2.WSGIApplication([
@@ -45,6 +52,7 @@ application = webapp2.WSGIApplication([
     ('/', IndexPage),
     ('/items', ItemsPage),
     ('/users/(\d+)', UserPage),
+    ('/users/edit/(\d+)', UserEditPage),
     ('/items/(\d+)', ItemPage)
 ], debug=True)
 

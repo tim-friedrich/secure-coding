@@ -1,20 +1,33 @@
 
 {% extends 'pages/scaffold.html' %}
 {% block content %}
-<div class="jumbotron" xmlns="http://www.w3.org/1999/html">
-<h1>Welcome to the secure shop!</h1>
-<p>Please use the search function to search for Items</p>
-    <div class="input-group">
-        <input  type="text" class="form-control input-lg">
-            <span class="input-group-btn">
-                <button class="btn btn-lg" type="button" id="listItems">Search</button>
-            </span>
-        </input>
-    </div>
-    <h3>or</h3>
 
-    <a class="btn btn-default btn-lg" id="signinButton">Sign in</a>
+
+<div class="page-header">
+    <h1>Welcome to the Secure Coding Shop!</h1>
+</div></br>
+<div class="input-group">
+    <input  type="text" id="query" class="form-control input-lg">
+        <span class="input-group-btn">
+            <button class="btn btn-lg btn-default" type="button" id="searchButton">Search</button>
+        </span>
+    </input>
 </div>
+</br>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+
 
 <script>
     function init() {

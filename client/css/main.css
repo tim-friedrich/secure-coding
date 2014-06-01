@@ -167,3 +167,8 @@ nav ul li a{
 	float: left;
 	margin-right: 10px;
 }
+
+#user_image{
+    width: 300px;
+    heigth: auto;
+}

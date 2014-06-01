@@ -5,10 +5,10 @@ from messages import ItemMessage, ItemMessageCollection, UserMessage, \
     UserMessageCollection, CommMessage, CommMessageCollection
 
 class Item(ndb.Model):    
-    title = ndb.StringProperty(indexed=False)
-    description = ndb.StringProperty(indexed=False)
+    title = ndb.StringProperty(indexed=True)
+    description = ndb.StringProperty(indexed=True)
     expiration = ndb.DateTimeProperty(indexed=False)
-    price = ndb.StringProperty(indexed=False)
+    price = ndb.StringProperty(indexed=True)
     owner = ndb.KeyProperty(kind="User")
     created_at = ndb.DateTimeProperty(auto_now_add=True)
 
@@ -79,9 +79,9 @@ class User(ndb.Model):
 
 class Comm(ndb.Model):
     subject = ndb.StringProperty(indexed=False)
-    sender = ndb.FloatProperty(indexed=False)
+    sender = ndb.KeyProperty(kind="User")
     #multiple receiver
-    receiver = ndb.FloatProperty(indexed=False)
+    receiver = ndb.KeyProperty(kind="User", repeated=True)
     timestamp = ndb.DateTimeProperty(auto_now_add=True)
     content = ndb.StringProperty(indexed=False)
     item_id = ndb.StringProperty(indexed=False)
