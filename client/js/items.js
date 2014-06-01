@@ -34,15 +34,15 @@ google.appengine.secure.shop.renderItem = function(item){
 google.appengine.secure.shop.loadItem = function(){
     var request = {}
 
-    gapi.client.hardcode.items.getItem({
-        'id': $('#content').attr('data-id')
-    }).execute(function(resp){
+    gapi.client.hardcode.items.getItem({ id: $('#item').attr('data-id') }).execute(function(resp){
         $content = $('#content');
-        item = resp.data;
-        $content.find('#title').text(item['title']);
-        $content.find('#description').text(item['description']);
-        $content.find('#price').text(item['price']+" $");
-        $content.find('#seller').text(item['owner']['email']);
-        $content.find('#created_at').text(item['created_at']);
+        if (resp.code == "OK"){
+            item = resp.data[0];
+            $content.find('#title').text(item['title']);
+            $content.find('#description').text(item['description']);
+            $content.find('#price').text(item['price']+" $");
+            $content.find('#seller').text(item['owner']['email']);
+            $content.find('#created_at').text(item['created_at']);
+        }
     });
 }

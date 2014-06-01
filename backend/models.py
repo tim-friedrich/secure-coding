@@ -45,6 +45,7 @@ class User(ndb.Model):
 
     def to_message(self):
         return UserMessage(
+            user_id=str(self.key.id()),
             email=self.email,
             name=self.name,
             description=self.description,

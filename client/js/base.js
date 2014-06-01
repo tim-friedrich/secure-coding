@@ -16,7 +16,7 @@ google.appengine.secure = google.appengine.secure || {};
 /** hello namespace for this sample. */
 google.appengine.secure.shop = google.appengine.secure.shop || {};
 
-
+google.appengine.secure.shop.current_user  = {}
 /**
  * Initializes the application.
  * @param {string} apiRoot Root of the API's path.
@@ -40,26 +40,6 @@ google.appengine.secure.shop.init = function(apiRoot, callback) {
   gapi.client.load('hardcode', 'v1', api_ready, apiRoot);
   gapi.client.load('oauth2', 'v2', api_ready);
 };
-
-
-/**
- * Gets a numbered greeting via the API.
- * @param {string} id ID of the greeting.
- */
-/*
-google.appengine.secure.shop.getItem = function(id) {
-  gapi.client.hardcode.items.getItem({'id': id}).execute(
-      function(resp) {
-        if (!resp.code) {
-          google.appengine.secure.shop.print(resp);
-        }
-      });
-};
-*/
-/**
- * Lists greetings via the API.
- */
-
 
 /**
  * Client ID of the application (from the APIs Console).
@@ -110,11 +90,37 @@ google.appengine.secure.shop.signedIn = false;
 /**
  * Loads the application UI after the user has completed auth.
  */
-google.appengine.secure.shop.userAuthed = function() {
-  var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
-    if (!resp.code) {
-      google.appengine.secure.shop.signedIn = true;
-      $('#signinButton').hide();
-    }
-  });
+google.appengine.secure.shop.userAuthed = function(e) {
+    var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
+        if (!resp.code) {
+            google.appengine.secure.shop.signedIn = true;
+            google.appengine.secure.shop.setCurrentUser(resp.email);
+        }
+    });
 };
+
+
+google.appengine.secure.shop.setCurrentUser = function (email){
+    gapi.client.hardcode.users.listUsers().execute(
+        function(resp) {
+            if (resp.code == 'OK') {
+              resp.data = resp.data || [];
+              for(index in resp.data){
+                  user = resp.data[index]
+                  if(user.email == email){
+                    google.appengine.secure.shop.currentUser = user;
+                    google.appengine.secure.shop.renderLoggedInNav();
+                    return;
+                  }
+              }
+            }
+    });
+}
+
+google.appengine.secure.shop.renderLoggedInNav = function () {
+    $('nav').find('#currentUserNav').attr(
+        'href',
+        '/users/'+google.appengine.secure.shop.currentUser.user_id
+    );
+}
+

@@ -32,9 +32,9 @@ class ItemPage(webapp2.RequestHandler):
 
 
 class UserPage(webapp2.RequestHandler):
-    def get(self):
-        template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render({}))
+    def get(self, user_id):
+        template = JINJA_ENVIRONMENT.get_template('pages/users/show.html')
+        self.response.write(template.render({'user_id': user_id}))
         return self.response
 
 
@@ -44,7 +44,7 @@ application = webapp2.WSGIApplication([
     ('/items/add', AddItemPage),
     ('/', IndexPage),
     ('/items', ItemsPage),
-    ('/user', UserPage),
+    ('/users/(\d+)', UserPage),
     ('/items/(\d+)', ItemPage)
 ], debug=True)
 

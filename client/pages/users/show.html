@@ -1,0 +1,29 @@
+
+{% extends 'pages/scaffold.html' %}
+{% block content %}
+
+<div class="media" id="user" data-id="{{ user_id }}">
+  <a class="pull-left" href="#">
+    <img class="media-object" id="user-image" src="" alt="optional user image">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading" id="name"> </h4>
+
+    <dl class="dl-horizontal">
+        <dt>E-Mail</dt>
+        <dd id="email"> </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Description</dt>
+        <dd id="description"> </dd>
+    </dl>
+  </div>
+</div>
+<script>
+    function init() {
+        $(document).ready(function(){
+            google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', google.appengine.secure.shop.loadUser);
+        });
+    }
+</script>
+{% endblock %}

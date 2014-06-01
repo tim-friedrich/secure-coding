@@ -89,7 +89,7 @@ class Items(remote.Service):
 
         item = Item.get_by_id(request.id)
         if item.owner != User.get_current_user():
-            return BaseMessage(message="Missing rights",
+            return BaseMessage(message="Missing permissions",
                                code="ERROR",
                                data="You are not authorized to delete the Item.")
         if item:
