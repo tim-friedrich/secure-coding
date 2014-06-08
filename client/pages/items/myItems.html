@@ -1,0 +1,11 @@
+{% extends 'pages/scaffold.html' %}
+{% block content %}
+<h1>My Items</h1>
+<script>
+     function init() {
+        $(document).ready(function(){
+            google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', google.appengine.secure.shop.listOwnItems);
+        });
+     }
+</script>
+{% endblock %}

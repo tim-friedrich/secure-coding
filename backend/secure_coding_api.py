@@ -6,6 +6,7 @@ as well as those methods defined in an API.
 from datetime import date
 
 import endpoints
+from google.appengine.api.datastore_errors import BadValueError
 from google.appengine.ext import endpoints
 from google.appengine.ext import ndb
 from protorpc import messages
@@ -14,7 +15,7 @@ from protorpc import remote
 from messages import UserMessageCollection, UserMessage, ItemMessage, ItemMessageCollection, \
     BaseMessage, CommMessage, CommMessageCollection
 from models import User, Item, Comm
-from backend.messages import SearchMessage
+from backend.messages import SearchMessage, FeedbackMessage, FeedbackMessageCollection
 
 package = 'SecureCoding'
 
@@ -47,26 +48,29 @@ class Items(remote.Service):
         ItemMessageCollection)
 
     @endpoints.method(ITEMS_RESOURCE, BaseMessage,
-                      path='item/add', http_method='POST',
+                      path='items/add', http_method='POST',
                       name='addItem')
     def add_item_post(self, request):
         check_signed_in()
-        item = Item(
-            title=request.title,
-            description=request.description,
-            expiration=request.expiration,
-            price=request.price,
-            owner=User.get_current_user()
-        )
-        key = item.put()
-        return BaseMessage(message="OK", code="OK", data=str(key.id()))
+        try:
+            item = Item(
+                title=request.title,
+                description=request.description,
+                expiration=request.expiration,
+                price=request.price,
+                owner=User.get_current_user()
+            )
+            key = item.put()
+            return BaseMessage(message="OK", code="OK", data=str(key.id()))
+        except BadValueError as e:
+            return BaseMessage(message= e.message, code="ERROR", data=e.message)
 
     ID_RESOURCE = endpoints.ResourceContainer(
         message_types.VoidMessage,
         id=messages.IntegerField(1, variant=messages.Variant.INT32))
 
     @endpoints.method(ID_RESOURCE, ItemMessageCollection,
-                      path='item/{id}', http_method='GET',
+                      path='items/{id}', http_method='GET',
                       name='getItem')
     def items_get(self, request):
         item = Item.get_by_id(request.id)
@@ -81,10 +85,11 @@ class Items(remote.Service):
                       path='items', http_method='GET',
                       name='listItems')
     def list_items_get(self, request):
+        #missing filter for expired items
         return Item.to_message_collection(Item.query())
 
     @endpoints.method(ID_RESOURCE, BaseMessage,
-                      path='item/del/{id}', http_method='POST',
+                      path='items/del/{id}', http_method='POST',
                       name='delItem')
     def del_item_post(self, request):
         user = check_signed_in()
@@ -101,11 +106,22 @@ class Items(remote.Service):
             raise endpoints.NotFoundException('Item %s not found.' %
                                               (request.id,))
 
-    @endpoints.method(ID_RESOURCE, ItemMessage,
-                      path='item/mod', http_method='POST',
+    @endpoints.method(ITEMS_RESOURCE, BaseMessage,
+                      path='items/mod', http_method='POST',
                       name='modItem')
     def mod_item_post(self, request):
-        pass
+        user = check_signed_in()
+        item = Item.get_by_id(request.item_id)
+        if item.owner == user:
+            item.description = request.description
+            item.expiration = request.expiration
+            item.price = request.price
+            item.title = request.title
+            item.put()
+            return BaseMessage(message="OK", code="OK", data=str(item.key.id()))
+        else:
+            raise endpoints.UnauthorizedException('')
+
 
 @hardcode.api_class(resource_name='users', path="users")
 class Users(remote.Service):
@@ -205,7 +221,7 @@ class Search(remote.Service):
 
 
 
-@hardcode.api_class(resource_name='comms', path="users")
+@hardcode.api_class(resource_name='comms', path="comms")
 class Comms(remote.Service):
     ##Item api
     COMMS_RESOURCE = endpoints.ResourceContainer(
@@ -268,6 +284,60 @@ class Comms(remote.Service):
             return BaseMessage(message="OK", code="OK", data="User deleted")
         else:
             raise endpoints.NotFoundException('Item %s not found.' %
+                                              (request.id,))
+
+
+@hardcode.api_class(resource_name='feedbacks', path="feedbacks")
+class Feedback(remote.Service):
+    ##Item api
+    FEEDBACK_RESOURCE = endpoints.ResourceContainer(
+            FeedbackMessage)
+
+    FEEDBACK_COLLECTION_RESOURCE = endpoints.ResourceContainer(
+            FeedbackMessageCollection)
+
+    @endpoints.method(FEEDBACK_RESOURCE, BaseMessage,
+                      path='feedbacks/add', http_method='POST',
+                      name='addFeedback')
+    def add_feedback_post(self, request):
+        check_signed_in()
+        feedback = Feedback()
+        key = feedback.put()
+        return BaseMessage(message="OK", code="OK", data=str(key.id()))
+
+    ID_RESOURCE = endpoints.ResourceContainer(
+        message_types.VoidMessage,
+        id=messages.IntegerField(1, variant=messages.Variant.INT32))
+
+    @endpoints.method(ID_RESOURCE, FeedbackMessageCollection,
+                      path='feedbacks/{id}', http_method='GET',
+                      name='getFeedback')
+    def feedback_get(self, request):
+        user = check_signed_in()
+        feedback = Feedback.get_by_id(request.id)
+
+        return Feedback.to_message(feedback)
+
+    @endpoints.method(message_types.VoidMessage, FeedbackMessageCollection,
+                      path='feedbacks', http_method='GET',
+                      name='listFeedbacks')
+    def list_feedbacks_get(self, request):
+        #missing filter
+        return Feedback.to_message_collection(Feedback.query())
+
+    @endpoints.method(ID_RESOURCE, BaseMessage,
+                      path='feedbacks/del/{id}', http_method='POST',
+                      name='delFeedback')
+    def del_feedback_post(self, request):
+        #delete Users Items?
+        user = check_signed_in()
+        feedback = Feedback.get_by_id(request.id)
+
+        if feedback and feedback.author == User.query(User.email == endpoints.get_current_user()).get():
+            feedback.delete()
+            return BaseMessage(message="OK", code="OK", data="Feedback deleted")
+        else:
+            raise endpoints.NotFoundException('Feedback %s not found.' %
                                               (request.id,))
 
 

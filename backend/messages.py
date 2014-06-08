@@ -61,3 +61,20 @@ class CommMessageCollection(messages.Message):
     message = messages.StringField(1)
     code = messages.StringField(2)
     data = messages.MessageField(CommMessage, 3, repeated=True)
+
+
+class FeedbackMessage(messages.Message):
+    feedback_id = messages.StringField(1)
+    author_uid = messages.StringField(2)
+    rating = messages.StringField(3)
+    comment = messages.StringField(4)
+    item_id = messages.StringField(5)
+    seller_uid = messages.StringField(6)
+    transaction = messages.StringField(7)
+    created_at = messages.StringField(8)
+
+
+class FeedbackMessageCollection(messages.Message):
+    message = messages.StringField(1)
+    code = messages.StringField(2)
+    data = messages.MessageField(FeedbackMessage, 3, repeated=True)

@@ -1,24 +1,30 @@
 {% extends 'pages/scaffold.html' %}
 {% block content %}
-<div id="item" data-id="{{ item_id }}"></div>
-<h1 id="title"></h1>
-<dl class="dl-horizontal">
-    <dt>Description</dt>
-    <dd id="description"> </dd>
-</dl>
-<dl class="dl-horizontal">
-    <dt>Price</dt>
-    <dd id="price"> </dd>
-</dl>
-<dl class="dl-horizontal">
-    <dt>Seller</dt>
-    <dd id="seller"> </dd>
-</dl>
-<dl class="dl-horizontal">
-    <dt>Creation Time</dt>
-    <dd id="created_at"> </dd>
-</dl>
-<script>
+<div id="item" data-id="{{ item_id }}" class="pull-left">
+    <h1 id="title"></h1>
+    <dl class="dl-horizontal">
+        <dt>Description</dt>
+        <dd id="description"> </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Price</dt>
+        <dd id="price"> </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Seller</dt>
+        <dd id="seller"> </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Creation Time</dt>
+        <dd id="created_at"> </dd>
+    </dl>
+</div>
+<div id="itemButtons" class="pull-right">
+    <a href="/items/edit/{{ item_id }}" id="editItem" class="btn btn-default">Edit</a>
+    <button type="button" id="deleteItem" class="btn btn-default">Delete</button>
+    <button type="button" id="contactSeller" class="btn btn-default">Contact Seller</button>
+</div>
+    <script>
     function init() {
         $(document).ready(function(){
             google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', google.appengine.secure.shop.loadItem);

@@ -10,10 +10,8 @@ var google = google || {};
 /** appengine namespace for Google Developer Relations projects. */
 google.appengine = google.appengine || {};
 
-/** samples namespace for App Engine sample code. */
 google.appengine.secure = google.appengine.secure || {};
 
-/** hello namespace for this sample. */
 google.appengine.secure.shop = google.appengine.secure.shop || {};
 
 google.appengine.secure.shop.current_user  = {}
@@ -21,17 +19,17 @@ google.appengine.secure.shop.current_user  = {}
  * Initializes the application.
  * @param {string} apiRoot Root of the API's path.
  */
+var initCallback;
 google.appengine.secure.shop.init = function(apiRoot, callback) {
   // Loads the OAuth and helloworld APIs asynchronously, and triggers login
   // when they have completed.
   var apisToLoad;
-
+  initCallback = callback;
   var api_ready = function() {
     if (--apisToLoad == 0) {
-        //google.appengine.secure.shop.auth();
         google.appengine.secure.shop.signin(true,
             google.appengine.secure.shop.userAuthed);
-        callback();
+        google.appengine.secure.shop.renderNav();
         }
   }
 
@@ -110,11 +108,14 @@ google.appengine.secure.shop.setCurrentUser = function (email){
                   if(user.email == email){
                     google.appengine.secure.shop.currentUser = user;
                     google.appengine.secure.shop.renderLoggedInNav();
+                    initCallback();
                     return;
                   }
               }
             }
-    });
+            initCallback();
+        }
+    );
 }
 
 google.appengine.secure.shop.renderLoggedInNav = function () {
@@ -126,6 +127,10 @@ google.appengine.secure.shop.renderLoggedInNav = function () {
         'href',
         '/users/edit/'+google.appengine.secure.shop.currentUser.user_id
     );
+
+}
+
+google.appengine.secure.shop.renderNav = function () {
     var signinButton = document.querySelector('#signinButton');
     signinButton.addEventListener('click', google.appengine.secure.shop.auth);
 }

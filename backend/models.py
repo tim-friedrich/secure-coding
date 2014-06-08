@@ -118,7 +118,7 @@ class Transaction(ndb.Model):
     closed = ndb.StringProperty(indexed=False)
     buyer_confirmation = ndb.StringProperty(indexed=False)
     seller_confirmation = ndb.StringProperty(indexed=False)
-    seller = ndb.StringProperty(indexed=False)
+    seller = ndb.KeyProperty(kind="User")
     item_id = ndb.StringProperty(indexed=False)
     price = ndb.StringProperty(indexed=False)
     item_title = ndb.StringProperty(indexed=False)
@@ -129,11 +129,32 @@ class Transaction(ndb.Model):
 
 
 class Feedback(ndb.Model):
-    feedback_id = ndb.StringProperty(indexed=False)
-    author = ndb.StringProperty(indexed=False)
+    author = ndb.KeyProperty(kind="User")
     rating = ndb.StringProperty(indexed=False)
     comment = ndb.StringProperty(indexed=False)
-    item_id = ndb.StringProperty(indexed=False)
-    seller_uid = ndb.StringProperty(indexed=False)
-    transaction_id = ndb.StringProperty(indexed=False)
+    item = ndb.KeyProperty(kind="Item")
+    seller = ndb.KeyProperty(kind="User")
+    transaction = ndb.KeyProperty(kind="Transaction")
     created_at = ndb.DateTimeProperty(auto_now_add=True)
+
+    def to_message(self):
+        return FeedbackMessage(
+            feedback_id=self.key.id(),
+            author_uid=self.author.key.id,
+            rating=self.rating,
+            comment=self.comment,
+            item_id=self.item.key.id(),
+            seller_uid=self.seller.key.id(),
+            transaction_id=self.transaction.key.id(),
+            created_at=self.created_at)
+
+    @classmethod
+    def to_message_collection(Feedback, feedbacks):
+        feedbackMessages = []
+        for feedback in feedbacks:
+            feedbackMessages.append(feedback.to_message())
+
+        return FeedbackMessageCollection(
+            code="OK",
+            message="OK",
+            data=feedbackMessages)

@@ -47,21 +47,58 @@ google.appengine.secure.shop.loadItem = function(){
     });
 }
 
-google.appengine.secure.shop.load = function(){
+google.appengine.secure.shop.initAddOrEditItem = function(){
+    $form = $('form');
+    gapi.client.hardcode.items.getItem({ id: $('form').attr('data-id') }).execute(function(resp){
+
+        if (resp.code == "OK"){
+            item = resp.data[0];
+            $form.find('#item_name').val(item['title']);
+            $form.find('#item_description').val(item['description']);
+            $form.find('#item_price').val(item['price']);
+            $form.find('#item_expiration').val(item['expiration'])
+        }
+    });
     $('#submit_button').on('click', function(event){
         event.preventDefault();
-        gapi.client.hardcode.items.addItem(
-            {
-                'title': $('form').find('#item_name').val(),
-                'description': $('form').find('#item_description').val(),
-                'price': $('form').find('#item_price').val(),
-                'expiration': $('form').find('#item_expiration').val()
-            }
-        ).execute(function(resp){
-                if(resp.code != "OK"){
-                    alert("An Error has occurred while adding the item. The request returned with code: "+resp.code+" "+resp.message)
+        item = {
+                item_id: $form.attr('data-id'),
+                'title': $form.find('#item_name').val(),
+                'description': $form.find('#item_description').val(),
+                'price': $form.find('#item_price').val(),
+                'expiration': $form.find('#item_expiration').val()
                 }
-            });
+        if(!item.item_id){
+            gapi.client.hardcode.items.addItem(item
+                ).execute(function(resp){
+                        if(resp.code != "OK"){
+                            alert("An Error has occurred while adding the item. The request returned with code: "+resp.code+" "+resp.message)
+                        }
+                    });
+                }
+        else{
+            item.item_id =
+            gapi.client.hardcode.items.modItem(item
+                ).execute(function(resp){
+                    if(resp.code != "OK"){
+                        alert("An Error has occurred while adding the item. The request returned with code: "+resp.code+" "+resp.message)
+                    }
+                });
+        }
         return false;
     });
+};
+
+google.appengine.secure.shop.listOwnItems = function() {
+  gapi.client.hardcode.items.listItems().execute(
+      function(resp) {
+        if (resp.code == 'OK') {
+          resp.data = resp.data || [];
+          for(item in resp.data){
+            if (resp.data[item]['owner']['email'] == google.appengine.secure.shop.currentUser.email){
+                $('#content').append(google.appengine.secure.shop.renderItem(resp.data[item]))
+            }
+          };
+        }
+      });
 };
