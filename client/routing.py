@@ -59,15 +59,23 @@ class myItemsPage(webapp2.RequestHandler):
         return self.response
 
 
+class AddCommPage(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('pages/comms/add.html')
+        self.response.write(template.render({'item_id': self.request.GET['item']}))
+        return self.response
+
+
 application = webapp2.WSGIApplication([
     ('/items/add', AddItemPage),
     ('/items/myItems', myItemsPage),
     ('/', IndexPage),
     ('/items', ItemsPage),
+    ('/items/edit/(\d+)', ItemEditPage),
+    ('/items/(\d+)', ItemPage),
     ('/users/(\d+)', UserPage),
     ('/users/edit/(\d+)', UserEditPage),
-    ('/items/edit/(\d+)', ItemEditPage),
-    ('/items/(\d+)', ItemPage)
+    ('/comms/add', AddCommPage)
 ], debug=True)
 
 JINJA_ENVIRONMENT = jinja2.Environment(

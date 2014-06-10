@@ -3,7 +3,8 @@
 Defined here are the ProtoRPC messages needed to define Schemas for methods
 as well as those methods defined in an API.
 """
-from datetime import date
+from datetime import date, datetime
+import time
 
 import endpoints
 from google.appengine.api.datastore_errors import BadValueError
@@ -56,7 +57,7 @@ class Items(remote.Service):
             item = Item(
                 title=request.title,
                 description=request.description,
-                expiration=request.expiration,
+                expiration=datetime.strptime(request.expiration, "%m/%d/%Y"),
                 price=request.price,
                 owner=User.get_current_user()
             )
@@ -100,7 +101,7 @@ class Items(remote.Service):
                                code="ERROR",
                                data="You are not authorized to delete the Item.")
         if item:
-            item.delete()
+            item.key.delete()
             return BaseMessage(message="OK", code="OK", data="Item successful deleted")
         else:
             raise endpoints.NotFoundException('Item %s not found.' %
@@ -157,6 +158,7 @@ class Users(remote.Service):
                       path='user/{id}', http_method='GET',
                       name='getUser')
     def users_get(self, request):
+        #nur user selbst und admin?
         user = User.get_by_id(request.id)
         if user:
             return User.to_message_collection([user])
@@ -214,7 +216,7 @@ class Search(remote.Service):
             if((request.query in item.title or
                     request.query in item.description or
                     request.query in item.price) and
-                    item.expiration < date.today()):
+                    item.expiration >= date.today()):
                 items.append(item)
 
         return Item.to_message_collection(items)
@@ -234,17 +236,21 @@ class Comms(remote.Service):
                       path='comm/add', http_method='POST',
                       name='addComm')
     def add_comm_post(self, request):
-        check_signed_in()
-        comm = Comm(
-            subject=request.subject,
-            sender=User.get_current_user().id(),
-            receiver=request.receiver,
-            content=request.content,
-            item_id=request.item_id,
-            item_title=request.item_title,
-            price=request.price)
-        key = comm.put()
-        return BaseMessage(message="OK", code="OK", data=str(key.id()))
+        user = check_signed_in()
+        item = Item.get_by_id(long(request.item_id))
+        try:
+            comm = Comm(
+                subject=request.subject,
+                sender=user.id(),
+                receiver=request.receiver.split(';'),
+                content=request.content,
+                item_id=item,
+                item_title=item.title,
+                price=item.price)
+            key = comm.put()
+            return BaseMessage(message="OK", code="OK", data=str(key.id()))
+        except Exception as e:
+            return BaseMessage(message=e.message, code="ERROR", data=e.message)
 
     ID_RESOURCE = endpoints.ResourceContainer(
         message_types.VoidMessage,

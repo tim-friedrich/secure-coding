@@ -7,7 +7,7 @@ from messages import ItemMessage, ItemMessageCollection, UserMessage, \
 class Item(ndb.Model):    
     title = ndb.StringProperty(indexed=True)
     description = ndb.StringProperty(indexed=True)
-    expiration = ndb.DateTimeProperty(indexed=False)
+    expiration = ndb.DateProperty(indexed=False)
     price = ndb.StringProperty(indexed=True)
     owner = ndb.KeyProperty(kind="User")
     created_at = ndb.DateTimeProperty(auto_now_add=True)

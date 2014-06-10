@@ -22,7 +22,7 @@ google.appengine.secure.shop.initSettingsPage = function(){
             $content = $('#content');
             $content.find('#user_name').val(user.name);
             $content.find('#user_description').val(user.description);
-            $content.find('#user_image').val(user.image_url);
+            $content.find('#user_image_input').val(user.image_url);
         }
     });
 
@@ -33,7 +33,7 @@ google.appengine.secure.shop.initSettingsPage = function(){
                 'name': $('form').find('#user_name').val(),
                 'user_id': $('#user').attr('data-id'),
                 'description': $('form').find('#user_description').val(),
-                'image_url': $('form').find('#user_image').val()
+                'image_url': $('form').find('#user_image_input').val()
             }
         ).execute(function(resp){
                 if(resp.code != "OK"){

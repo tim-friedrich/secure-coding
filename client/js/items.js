@@ -4,8 +4,8 @@ google.appengine.secure.shop.listItems = function() {
       function(resp) {
         if (resp.code == 'OK') {
           resp.data = resp.data || [];
-          for(item in resp.data){
-            $('#content').append(google.appengine.secure.shop.renderItem(resp.data[item]))
+          for(var i=0; i<resp.data.length; i++){
+            $('#content').append(google.appengine.secure.shop.renderItem(resp.data[i]))
           };
         }
       });
@@ -43,12 +43,30 @@ google.appengine.secure.shop.loadItem = function(){
             $content.find('#price').text(item['price']+" $");
             $content.find('#seller').text(item['owner']['email']);
             $content.find('#created_at').text(item['created_at']);
+
+            if(!google.appengine.secure.shop.currentUser || item['owner']['email'] != google.appengine.secure.shop.currentUser.email){
+                $('#editItem').hide();
+                $('#deleteItem').hide();
+            }
+            else{
+                $('#deleteItem').on('click', function(event){
+                    gapi.client.hardcode.items.delItem({ id: $('#item').attr('data-id') }).execute(function(resp){
+                        if (resp.code == "OK"){
+                            window.location.replace('/items/myItems')
+                        }
+                        else{
+                            alert("An Error has occurred while deleting the item. The request returned with code: "+resp.code+" "+resp.message)
+                        }
+                    })
+                })
+            }
         }
     });
 }
 
 google.appengine.secure.shop.initAddOrEditItem = function(){
     $form = $('form');
+    $('#item_expiration').datepicker();
     gapi.client.hardcode.items.getItem({ id: $('form').attr('data-id') }).execute(function(resp){
 
         if (resp.code == "OK"){
@@ -74,6 +92,9 @@ google.appengine.secure.shop.initAddOrEditItem = function(){
                         if(resp.code != "OK"){
                             alert("An Error has occurred while adding the item. The request returned with code: "+resp.code+" "+resp.message)
                         }
+                        else{
+                            window.location.replace('/items/'+resp.data)
+                        }
                     });
                 }
         else{
@@ -83,6 +104,10 @@ google.appengine.secure.shop.initAddOrEditItem = function(){
                     if(resp.code != "OK"){
                         alert("An Error has occurred while adding the item. The request returned with code: "+resp.code+" "+resp.message)
                     }
+                    else{
+                        window.location.replace('/items/'+resp.data)
+                    }
+
                 });
         }
         return false;

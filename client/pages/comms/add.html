@@ -1,0 +1,49 @@
+
+{% extends 'pages/scaffold.html' %}
+{% block content %}
+<div class="col-sm-offset-2 col-sm-10">
+    <h1>New Message</h1>
+</div>
+<form data-id="{{ item_id }}" class="form-horizontal" role="form">
+    <div class="form-group">
+        <label for="recipients_input" class="col-sm-2 control-label">Recipients</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="recipients_input" placeholder="Please enter the recipients user id. Separeted with ;">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="subject_input" class="col-sm-2 control-label">Subject</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="subject_input">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="item_title_input" class="col-sm-2 control-label">Item Title</label>
+        <div class="col-sm-10">
+            <p class="form-control-static" id="item_title_input"></p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="item_price_input" class="col-sm-2 control-label">Item Price</label>
+        <div class="col-sm-10">
+            <p class="form-control-static" id="item_price_input"></p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="content_input" class="col-sm-2 control-label">Content</label>
+        <div class="col-sm-10">
+            <textarea type="textarea" class="form-control" id="content_input"></textarea>
+        </div>
+    </div>
+    <div class="col-sm-offset-2 col-sm-10">
+        <button class="btn btn-default" id="submit_button">Send Message</button>
+    </div>
+</form>
+<script>
+    function init() {
+    $(document).ready(function(){
+        google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', function(){google.appengine.secure.shop.initAddComm();});
+    });
+}
+</script>
+{% endblock %}

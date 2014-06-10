@@ -94,6 +94,9 @@ google.appengine.secure.shop.userAuthed = function(e) {
             google.appengine.secure.shop.signedIn = true;
             google.appengine.secure.shop.setCurrentUser(resp.email);
         }
+        else{
+            initCallback();
+        }
     });
 };
 
@@ -109,11 +112,10 @@ google.appengine.secure.shop.setCurrentUser = function (email){
                     google.appengine.secure.shop.currentUser = user;
                     google.appengine.secure.shop.renderLoggedInNav();
                     initCallback();
-                    return;
+                    break;
                   }
               }
             }
-            initCallback();
         }
     );
 }
