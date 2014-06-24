@@ -213,8 +213,8 @@ class Search(remote.Service):
     def query_get(self, request):
         items = []
         for item in Item.query():
-            if((request.query in item.title or
-                    request.query in item.description or
+            if((request.query.lower() in item.title.lower() or
+                    request.query.lower() in item.description.lower() or
                     request.query in item.price) and
                     item.expiration >= date.today()):
                 items.append(item)

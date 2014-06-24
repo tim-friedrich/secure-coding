@@ -20,6 +20,7 @@ google.appengine.secure.shop.current_user  = {}
  * @param {string} apiRoot Root of the API's path.
  */
 var initCallback;
+
 google.appengine.secure.shop.init = function(apiRoot, callback) {
   // Loads the OAuth and helloworld APIs asynchronously, and triggers login
   // when they have completed.
@@ -27,8 +28,8 @@ google.appengine.secure.shop.init = function(apiRoot, callback) {
   initCallback = callback;
   var api_ready = function() {
     if (--apisToLoad == 0) {
-        google.appengine.secure.shop.signin(true,
-            google.appengine.secure.shop.userAuthed);
+        console.log("API ready");
+        google.appengine.secure.shop.signin(true, google.appengine.secure.shop.userAuthed);
         google.appengine.secure.shop.renderNav();
         }
   }
@@ -62,11 +63,10 @@ google.appengine.secure.shop.SCOPES =
  * @param {Function} callback Callback to call on completion.
  */
 google.appengine.secure.shop.signin = function(mode, callback) {
-  gapi.auth.authorize({client_id: google.appengine.secure.shop.LOCAL_CLIENT_ID,
+    console.log("Signing in...");
+    gapi.auth.authorize({client_id: google.appengine.secure.shop.LOCAL_CLIENT_ID,
       scope: google.appengine.secure.shop.SCOPES, immediate: mode},
      callback);
-
-
 };
 
 /**
@@ -91,10 +91,11 @@ google.appengine.secure.shop.signedIn = false;
 google.appengine.secure.shop.userAuthed = function(e) {
     var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
         if (!resp.code) {
+            console.log("User signed in");
             google.appengine.secure.shop.signedIn = true;
             google.appengine.secure.shop.setCurrentUser(resp.email);
-        }
-        else{
+        } else {
+            console.log("Sign in failed");
             initCallback();
         }
     });
@@ -109,6 +110,9 @@ google.appengine.secure.shop.setCurrentUser = function (email){
               for(index in resp.data){
                   user = resp.data[index]
                   if(user.email == email){
+                    console.log("Current user set:");
+                    console.log(user);
+
                     google.appengine.secure.shop.currentUser = user;
                     google.appengine.secure.shop.renderLoggedInNav();
                     initCallback();
@@ -129,11 +133,27 @@ google.appengine.secure.shop.renderLoggedInNav = function () {
         'href',
         '/users/edit/'+google.appengine.secure.shop.currentUser.user_id
     );
-
+    $('#signinButton').html("Logout");
 }
 
 google.appengine.secure.shop.renderNav = function () {
+        console.log("Rendering navigation");
     var signinButton = document.querySelector('#signinButton');
     signinButton.addEventListener('click', google.appengine.secure.shop.auth);
 }
 
+google.appengine.secure.shop.showLoadingDialog = function (title) {
+    if (title == null) {
+        title = "Loading";
+    }
+    var dialog = document.getElementById("loading");
+    dialog.style.top = "50%";
+    dialog.style.opacity = "1";
+    dialog.children[0].innerHTML = title;
+}
+
+google.appengine.secure.shop.hideLoadingDialog = function () {
+    var dialog = document.getElementById("loading");
+    dialog.style.top = "-200px";
+    dialog.style.opacity = "0";
+}

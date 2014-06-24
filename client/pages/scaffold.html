@@ -33,7 +33,7 @@
               </li>
               <li><a id="comms" href="comms">Messages</a>
                   <ul>
-                      <li><a href="/comms/add">new Message</a></li>
+                      <li><a href="/comms/add">New Message</a></li>
                   </ul>
               </li>
             </ul>
@@ -43,6 +43,15 @@
     <div id="content" class="center-block">
         {% block content %}{% endblock content %}
     </div>
+
+    <div id="loading">
+        <div id="title">Loading</div>
+        <div id="movingBallG">
+            <div class="movingBallLineG"></div>
+            <div id="movingBallG_1" class="movingBallG"></div>
+        </div>
+    </div>
+
 <script src="https://apis.google.com/js/client.js?onload=init"></script>
 </body>
 </html>

@@ -36,6 +36,7 @@
 <script>
     function init() {
     $(document).ready(function(){
+        google.appengine.secure.shop.showLoadingDialog();
         google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', function(){google.appengine.secure.shop.initAddOrEditItem();});
     });
 }

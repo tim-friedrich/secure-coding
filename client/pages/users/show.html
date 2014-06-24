@@ -2,26 +2,33 @@
 {% extends 'pages/scaffold.html' %}
 {% block content %}
 
+<div class="page-header">
+    <h1>User <small id="subheading">&nbsp;</small></h1>
+</div></br>
 <div class="media" id="user" data-id="{{ user_id }}">
   <a class="pull-left" href="#">
-    <img class="media-object" id="user_image" src="" alt="optional user image">
+    <img class="user_image media-object" id="user_image" src="../media/user_default.jpg" alt="Optional user image">
   </a>
   <div class="media-body">
-    <h4 class="media-heading" id="name"> </h4>
-
+    <dl class="dl-horizontal">
+        <dt>Name</dt>
+        <dd id="name">&nbsp;</dd>
+    </dl>
     <dl class="dl-horizontal">
         <dt>E-Mail</dt>
-        <dd id="email"> </dd>
+        <dd id="email">&nbsp;</dd>
     </dl>
     <dl class="dl-horizontal">
         <dt>Description</dt>
-        <dd id="description"> </dd>
+        <dd id="description">&nbsp;</dd>
     </dl>
   </div>
 </div>
+
 <script>
     function init() {
         $(document).ready(function(){
+            google.appengine.secure.shop.showLoadingDialog();
             google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', google.appengine.secure.shop.loadUser);
         });
     }

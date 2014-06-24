@@ -19,10 +19,17 @@ body {
 #content > .jumbotron{
     text-align: center;
 }
+ /* User */
+#user_image{
+    width: 200px;
+    heigth: 200px;
+    -webkit-border-radius: 25px 0 25px 0;
+	border-radius: 25px 0 25px 0;
+}
 
 /* Navigation */
 nav {
-	z-index:1;
+	z-index: 1;
 	position: relative;
 	background-color:#dd630d;
 	height:40px;
@@ -57,7 +64,7 @@ nav ul li a {
   margin-left: 1px;
   white-space: nowrap;
   height: 40px;
-  width: 90px;
+  width: 140px;
   text-align: center;
  
 }
@@ -90,13 +97,6 @@ nav li:hover li a:hover {
  
 nav ul li ul li a {
     text-align:left;
-}
-
-nav ul li a{
-    width: 120px;
-    height: 40px;
-    padding: 7px 0px 0px 1px;
-    margin: 0px;
 }
 
 /* Item detail */
@@ -168,7 +168,155 @@ nav ul li a{
 	margin-right: 10px;
 }
 
-#user_image{
-    width: 300px;
-    heigth: auto;
+/* Loading animation */
+#loading {
+    position: absolute;
+    width: 280px;
+    height: 100px;
+    left: 50%;
+    top: -200px;
+    margin-left: -135px;
+    background: rgba(200,200,200,0.8);
+
+    -webkit-border-radius: 25px 0 25px 0;
+	border-radius: 25px 0 25px 0;
+
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+}
+
+#loading #title {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 10px;
+    font-size: 30px;
+    text-align: center;
+    color: #666666;
+    cursor: default;
+}
+
+#movingBallG{
+    position:absolute;
+    bottom: 13px;
+    left: 13px;
+    width:256px;
+    height:20px;
+}
+
+.movingBallLineG{
+    position:absolute;
+    left:0px;
+    top:8px;
+    height:4px;
+    width:256px;
+    background-color:#666666;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+
+.movingBallG{
+    background-color:#DD640D;
+    position:absolute;
+    top:0;
+    left:0;
+    width:20px;
+    height:20px;
+    -moz-border-radius:10px;
+    -moz-animation-name:bounce_movingBallG;
+    -moz-animation-duration:1.3s;
+    -moz-animation-iteration-count:infinite;
+    -moz-animation-direction:linear;
+    -webkit-border-radius:10px;
+    -webkit-animation-name:bounce_movingBallG;
+    -webkit-animation-duration:1.3s;
+    -webkit-animation-iteration-count:infinite;
+    -webkit-animation-direction:linear;
+    -ms-border-radius:10px;
+    -ms-animation-name:bounce_movingBallG;
+    -ms-animation-duration:1.3s;
+    -ms-animation-iteration-count:infinite;
+    -ms-animation-direction:linear;
+    -o-border-radius:10px;
+    -o-animation-name:bounce_movingBallG;
+    -o-animation-duration:1.3s;
+    -o-animation-iteration-count:infinite;
+    -o-animation-direction:linear;
+    border-radius:10px;
+    animation-name:bounce_movingBallG;
+    animation-duration:1.3s;
+    animation-iteration-count:infinite;
+    animation-direction:linear;
+}
+
+@-moz-keyframes bounce_movingBallG{
+    0%{
+    left:0px;
+    }
+
+    50%{
+    left:236px;
+    }
+
+    100%{
+    left:0px;
+    }
+}
+
+@-webkit-keyframes bounce_movingBallG{
+    0%{
+    left:0px;
+    }
+
+    50%{
+    left:236px;
+    }
+
+    100%{
+    left:0px;
+    }
+}
+
+@-ms-keyframes bounce_movingBallG{
+    0%{
+    left:0px;
+    }
+
+    50%{
+    left:236px;
+    }
+
+    100%{
+    left:0px;
+    }
+}
+
+@-o-keyframes bounce_movingBallG{
+    0%{
+    left:0px;
+    }
+
+    50%{
+    left:236px;
+    }
+
+    100%{
+    left:0px;
+    }
+}
+
+@keyframes bounce_movingBallG{
+    0%{
+    left:0px;
+    }
+
+    50%{
+    left:236px;
+    }
+
+    100%{
+    left:0px;
+    }
 }

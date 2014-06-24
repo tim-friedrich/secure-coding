@@ -8,6 +8,7 @@ google.appengine.secure.shop.listItems = function() {
             $('#content').append(google.appengine.secure.shop.renderItem(resp.data[i]))
           };
         }
+        google.appengine.secure.shop.hideLoadingDialog();
       });
 };
 
@@ -61,6 +62,7 @@ google.appengine.secure.shop.loadItem = function(){
                 })
             }
         }
+        google.appengine.secure.shop.hideLoadingDialog();
     });
 }
 
@@ -68,7 +70,6 @@ google.appengine.secure.shop.initAddOrEditItem = function(){
     $form = $('form');
     $('#item_expiration').datepicker();
     gapi.client.hardcode.items.getItem({ id: $('form').attr('data-id') }).execute(function(resp){
-
         if (resp.code == "OK"){
             item = resp.data[0];
             $form.find('#item_name').val(item['title']);
@@ -76,6 +77,7 @@ google.appengine.secure.shop.initAddOrEditItem = function(){
             $form.find('#item_price').val(item['price']);
             $form.find('#item_expiration').val(item['expiration'])
         }
+        google.appengine.secure.shop.hideLoadingDialog();
     });
     $('#submit_button').on('click', function(event){
         event.preventDefault();
@@ -125,5 +127,6 @@ google.appengine.secure.shop.listOwnItems = function() {
             }
           };
         }
+        google.appengine.secure.shop.hideLoadingDialog();
       });
 };
