@@ -1,9 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'pages/scaffold.html' %}
+{% block content %}
+<div id="comm" data-id="{{ comm_id }}" class="pull-left">
+    <h1 id="subject"></h1>
+    <dl class="dl-horizontal">
+        <dt>Recipients</dt>
+        <dd id="recipients"> </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Item Title</dt>
+        <dd id="item_title"> </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>Item Price</dt>
+        <dd id="item_price"> </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        <dt>content</dt>
+        <dd id="content"> </dd>
+    </dl>
+</div>
+<div id="itemButtons" class="pull-right">
+    <a href="/items/edit/{{ item_id }}" id="editItem" class="btn btn-default">Edit</a>
+    <button type="button" id="deleteItem" class="btn btn-default">Delete</button>
+    <a href="/comms/add?item={{ item_id }}" id="contactSeller" class="btn btn-default">Contact Seller</a>
+</div>
+    <script>
+    function init() {
+        $(document).ready(function(){
+            google.appengine.secure.shop.showLoadingDialog();
+            google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', google.appengine.secure.shop.loadComm);
+        });
+    }
+</script>
+{% endblock %}
