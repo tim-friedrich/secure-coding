@@ -27,8 +27,10 @@ google.appengine.secure.shop.renderItem = function(item){
     new_item.find('.title').text(item['title']);
     new_item.find('.description').text(item['description']);
     new_item.find('.price').text(item['price']+" $");
-    new_item.find('.sellerName').text(item['owner']['email']);
-    new_item.find('.creationTime').text(item['created_at']);
+    //new_item.find('.sellerName').text(item['owner']['email']);
+    new_item.find('.sellerName').text(google.appengine.secure.shop.getReadableUserName(item['owner']));
+    //new_item.find('.creationTime').text(item['created_at']);
+    new_item.find('.creationTime').text(google.appengine.secure.shop.getReadableDate(item['created_at']));
     return new_item
 };
 
@@ -42,7 +44,8 @@ google.appengine.secure.shop.loadItem = function(){
             $content.find('#title').text(item['title']);
             $content.find('#description').text(item['description']);
             $content.find('#price').text(item['price']+" $");
-            $content.find('#seller').text(item['owner']['email']);
+            //$content.find('#seller').text(item['owner']['email']);
+            $content.find('#seller').text(google.appengine.secure.shop.getReadableUserName(item['owner']));
             $content.find('#created_at').text(item['created_at']);
 
             if(!google.appengine.secure.shop.currentUser || item['owner']['email'] != google.appengine.secure.shop.currentUser.email){
