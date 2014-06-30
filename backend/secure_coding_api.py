@@ -24,10 +24,13 @@ package = 'SecureCoding'
 WEB_CLIENT_ID = '142521807042.apps.googleusercontent.com'
 LOCAL_CLIENT_ID = '142521807042-f6qni9r0isipad8nldolobfvtdm64j58.apps.googleusercontent.com'
 ANDROID_AUDIENCE = WEB_CLIENT_ID
-
+BOT_ID = '445281834304.apps.googleusercontent.com'
+USER_1_ID = '445281834304-dblpo7qja7reimbv9bsi6qocoddli6ad.apps.googleusercontent.com'
+USER_2_ID = '445281834304-trjkterafto7bv8cm8kcj2oscdpatsbj.apps.googleusercontent.com'
+USER_ADMIN_ID = '445281834304-22jcujteaed1l2obbstb4l1kpoqkom37.apps.googleusercontent.com'
 
 hardcode = endpoints.api(name='hardcode', version='v1',
-                        allowed_client_ids=[WEB_CLIENT_ID, LOCAL_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
+                        allowed_client_ids=[WEB_CLIENT_ID,BOT_ID, USER_1_ID, USER_2_ID,USER_ADMIN_ID, LOCAL_CLIENT_ID, endpoints.API_EXPLORER_CLIENT_ID],
                         audiences=[ANDROID_AUDIENCE],
                         scopes=[endpoints.EMAIL_SCOPE])
 

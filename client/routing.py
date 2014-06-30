@@ -86,7 +86,7 @@ application = webapp2.WSGIApplication([
     ('/items/add', AddItemPage),
     ('/items/myItems', myItemsPage),
     ('/', IndexPage),
-    ('/items', ItemsPage),
+    ('/items', IndexPage),
     ('/items/edit/(\d+)', ItemEditPage),
     ('/items/(\d+)', ItemPage),
     ('/users/(\d+)', UserPage),
