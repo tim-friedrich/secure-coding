@@ -95,7 +95,7 @@ class Items(remote.Service):
     def del_item_post(self, request):
         user = check_signed_in()
 
-        item = Item.get_by_id(request.id)
+        item = Item.get_by_id(long(request.item_id))
         if item.owner != User.get_current_user():
             return BaseMessage(message="Missing permissions",
                                code="ERROR",
@@ -112,10 +112,10 @@ class Items(remote.Service):
                       name='modItem')
     def mod_item_post(self, request):
         user = check_signed_in()
-        item = Item.get_by_id(request.item_id)
+        item = Item.get_by_id(long(request.item_id))
         if item.owner == user:
             item.description = request.description
-            item.expiration = request.expiration
+            item.expiration = datetime.strptime(request.expiration, "%m/%d/%Y")
             item.price = request.price
             item.title = request.title
             item.put()

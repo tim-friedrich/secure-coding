@@ -75,7 +75,8 @@ google.appengine.secure.shop.initAddOrEditItem = function(){
             $form.find('#item_name').val(item['title']);
             $form.find('#item_description').val(item['description']);
             $form.find('#item_price').val(item['price']);
-            $form.find('#item_expiration').val(item['expiration'])
+            var date = new Date(item['expiration']);
+            $form.find('#item_expiration').val(date.toLocaleDateString("en-US"));
         }
         google.appengine.secure.shop.hideLoadingDialog();
     });
@@ -100,17 +101,15 @@ google.appengine.secure.shop.initAddOrEditItem = function(){
                     });
                 }
         else{
-            item.item_id =
-            gapi.client.hardcode.items.modItem(item
-                ).execute(function(resp){
-                    if(resp.code != "OK"){
-                        alert("An Error has occurred while adding the item. The request returned with code: "+resp.code+" "+resp.message)
-                    }
-                    else{
-                        window.location.replace('/items/'+resp.data)
-                    }
-
-                });
+            var new_item_id = gapi.client.hardcode.items.modItem(item).execute(function(resp){
+            //item.item_id = gapi.client.hardcode.items.modItem(item).execute(function(resp){
+                if(resp.code != "OK"){
+                    alert("An Error has occurred while adding the item. The request returned with code: "+resp.code+" "+resp.message)
+                }
+                else{
+                    window.location.replace('/items/'+resp.data)
+                }
+            });
         }
         return false;
     });
