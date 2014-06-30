@@ -48,14 +48,16 @@ class UserMessageCollection(messages.Message):
 
 
 class CommMessage(messages.Message):
-    subject = messages.StringField(1)
-    sender = messages.StringField(2)
-    receiver = messages.StringField(3)
-    timestamp = messages.StringField(4)
-    content = messages.StringField(5)
-    item_id = messages.StringField(6)
-    item_title = messages.StringField(7)
-    price = messages.StringField(8)
+    comm_id = messages.StringField(1)
+    subject = messages.StringField(2)
+    sender = messages.StringField(3)
+    receiver = messages.StringField(4)
+    timestamp = messages.StringField(5)
+    content = messages.StringField(6)
+    item_id = messages.StringField(7)
+    item_title = messages.StringField(8)
+    price = messages.StringField(9)
+    created_at = messages.StringField(10)
 
 
 class CommMessageCollection(messages.Message):

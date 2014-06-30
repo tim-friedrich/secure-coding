@@ -280,8 +280,13 @@ class Comms(remote.Service):
                       path='comms', http_method='GET',
                       name='listComm')
     def list_comms_get(self, request):
+        user = check_signed_in()
         #missing filter
-        return Comm.to_message_collection(Comm.query())
+        comms = []
+        for comm in Comm.query():
+            if comm.sender == user or (user.key.id() in comm.receiver):
+                comms.append(comm)
+        return Comm.to_message_collection(comms)
 
     @endpoints.method(ID_RESOURCE, BaseMessage,
                       path='comm/del/{id}', http_method='POST',

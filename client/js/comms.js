@@ -12,6 +12,7 @@ google.appengine.secure.shop.initAddComm = function() {
         $('#item_price_input').hide();
     }
     $('button').on('click', function(event){
+        event.preventDefault();
         gapi.client.hardcode.comms.addComm({
             'subject': $('#subject_input').val(),
             'receiver': $('#recipients_input').val(),
@@ -19,11 +20,34 @@ google.appengine.secure.shop.initAddComm = function() {
             'item_id': $('form').attr('data-id')
         }).execute(function(resp){
             if (resp.code == "OK"){
-                window.location.replace('/') //later to comms
+                window.location.replace('/')
             }
             else{
                 alert("An Error has occurred while deleting the item. The request returned with code: "+resp.code+" "+resp.message)
             }
         })
     })
+}
+
+google.appengine.secure.shop.initInbox = function() {
+    comm_list_element = '<li data-id="" class="list-group-item">\
+                <span class="subject"></span>\
+                <span class="comm_date pull-right"></span>\
+              </li>'
+
+    gapi.client.hardcode.comms.listComm().execute(function(resp){
+        if(resp.code == 'OK'){
+            for(var x=0; x < resp.data.length; x++){
+                new_element = $(comm_list_element).clone();
+                new_element.attr('data-id', resp.data[x].comm_id);
+                new_element.find('.subject').text(resp.data[x].subject);
+                new_element.find('.comm_date').text(resp.data[x].timestamp);
+                $('#comm_list').append(new_element);
+            }
+            $("li").on('click', function(event){
+                window.location.replace('/comms/'+$(event.target).attr('data-id'))
+            })
+        }
+    })
+    google.appengine.secure.shop.hideLoadingDialog();
 }

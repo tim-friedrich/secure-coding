@@ -94,17 +94,21 @@ class Comm(ndb.Model):
     created_at = ndb.DateTimeProperty(auto_now_add=True)
 
     def to_message(self):
+        receiver_str = ""
+        for rec in self.receiver:
+            receiver_str += str(rec.id())+";"
         return CommMessage(
+            comm_id=str(self.key.id()),
             subject=self.subject,
-            sender=self.sender,
+            sender=str(self.sender.id()),
             #multiple receiver
-            receiver=self.receiver,
-            timestamp=self.timestamp,
+            receiver=receiver_str,
+            timestamp=self.timestamp.strftime("%d/%m/%y %H:%M"),
             content=self.content,
             item_id=self.item_id,
             item_title=self.item_title,
             price=self.price,
-            created_at=self.created_at)
+            created_at=self.created_at.strftime("%d/%m/%y %H:%M"))
 
     @classmethod
     def to_message_collection(Comm, comms):

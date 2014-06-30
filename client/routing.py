@@ -69,8 +69,15 @@ class AddCommPage(webapp2.RequestHandler):
 
 class CommPage(webapp2.RequestHandler):
     def get(self, comm_id):
-        template = JINJA_ENVIRONMENT.get_template('pages/items/show.html')
-        self.response.write(template.render({"item_id": comm_id}))
+        template = JINJA_ENVIRONMENT.get_template('pages/comms/show.html')
+        self.response.write(template.render({"comm_id": comm_id}))
+        return self.response
+
+
+class CommsPage(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('pages/comms/comms.html')
+        self.response.write(template.render({}))
         return self.response
 
 application = webapp2.WSGIApplication([
@@ -84,6 +91,7 @@ application = webapp2.WSGIApplication([
     ('/users/edit/(\d+)', UserEditPage),
     ('/comms/add', AddCommPage),
     ('/comms/(\d+)', CommPage),
+    ('/comms', CommsPage)
 ], debug=True)
 
 JINJA_ENVIRONMENT = jinja2.Environment(

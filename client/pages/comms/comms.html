@@ -1,9 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+{% extends 'pages/scaffold.html' %}
+{% block content %}
+<h1>My Messages</h1>
+<ul id="comm_list" class="list-group">
 
-</body>
-</html>
+</ul>
+
+<script>
+    function init() {
+        $(document).ready(function(){
+            google.appengine.secure.shop.showLoadingDialog();
+            google.appengine.secure.shop.init('//' + window.location.host + '/_ah/api', google.appengine.secure.shop.initInbox);
+        });
+    }
+</script>
+{% endblock %}
