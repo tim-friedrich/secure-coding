@@ -62,8 +62,10 @@ class myItemsPage(webapp2.RequestHandler):
 class AddCommPage(webapp2.RequestHandler):
     def get(self):
         template = JINJA_ENVIRONMENT.get_template('pages/comms/add.html')
-        if self.request.GET['item']:
+        try:
             self.response.write(template.render({'item_id': self.request.GET['item']}))
+        except KeyError:
+            self.response.write(template.render({}))
         return self.response
 
 

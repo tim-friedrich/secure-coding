@@ -7,12 +7,12 @@ from backend.messages import FeedbackMessage, FeedbackMessageCollection
 
 
 class Item(ndb.Model):
-    title = ndb.StringProperty(indexed=True)
+    title = ndb.StringProperty(indexed=True, required=True)
     description = ndb.StringProperty(indexed=True)
-    expiration = ndb.DateProperty(indexed=False)
-    price = ndb.StringProperty(indexed=True)
-    owner = ndb.KeyProperty(kind="User")
-    created_at = ndb.DateTimeProperty(auto_now_add=True)
+    expiration = ndb.DateProperty(indexed=False, required=True)
+    price = ndb.StringProperty(indexed=True, required=True)
+    owner = ndb.KeyProperty(kind="User", required=True)
+    created_at = ndb.DateTimeProperty(auto_now_add=True, required=True)
 
     def to_message(self):
         return ItemMessage(
@@ -82,11 +82,11 @@ class User(ndb.Model):
 
 
 class Comm(ndb.Model):
-    subject = ndb.StringProperty(indexed=False)
-    sender = ndb.KeyProperty(kind="User")
+    subject = ndb.StringProperty(indexed=False, required=True)
+    sender = ndb.KeyProperty(kind="User", required=True)
     #multiple receiver
     receiver = ndb.KeyProperty(kind="User", repeated=True)
-    timestamp = ndb.DateTimeProperty(auto_now_add=True)
+    timestamp = ndb.DateTimeProperty(auto_now_add=True, required=True)
     content = ndb.StringProperty(indexed=False)
     item_id = ndb.StringProperty(indexed=False)
     item_title = ndb.StringProperty(indexed=False)
@@ -137,8 +137,8 @@ class Transaction(ndb.Model):
 
 
 class Feedback(ndb.Model):
-    author = ndb.KeyProperty(kind="User")
-    rating = ndb.StringProperty(indexed=False)
+    author = ndb.KeyProperty(kind="User", required=True)
+    rating = ndb.StringProperty(indexed=False, required=True)
     comment = ndb.StringProperty(indexed=False)
     item = ndb.KeyProperty(kind="Item")
     seller = ndb.KeyProperty(kind="User")

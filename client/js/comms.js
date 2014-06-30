@@ -29,6 +29,26 @@ google.appengine.secure.shop.initAddComm = function() {
     })
 }
 
+google.appengine.secure.shop.loadComm = function(){
+    comm_id = $('#comm').attr('data-id')
+
+    gapi.client.hardcode.comms.getComm({ id: comm_id }).execute(function(resp){
+        if(resp.code=='OK'){
+            $('#subject').text(resp.data[0].subject);
+            $('#sender').text(resp.data[0].sender);
+            $('#recipients').text(resp.data[0].receiver);
+            $('#item_title').text(resp.data[0].item_title);
+            $('#item_price').text(resp.data[0].price);
+            $('#comm_content').text(resp.data[0].content);
+        }
+        else{
+            alert("Something went wrong: "+resp.message)
+        }
+        google.appengine.secure.shop.hideLoadingDialog();
+    });
+
+}
+
 google.appengine.secure.shop.initInbox = function() {
     comm_list_element = '<li data-id="" class="list-group-item">\
                 <span class="subject"></span>\
@@ -48,6 +68,7 @@ google.appengine.secure.shop.initInbox = function() {
                 window.location.replace('/comms/'+$(event.target).attr('data-id'))
             })
         }
+        google.appengine.secure.shop.hideLoadingDialog();
     })
-    google.appengine.secure.shop.hideLoadingDialog();
+
 }
