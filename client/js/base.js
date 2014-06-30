@@ -124,6 +124,7 @@ google.appengine.secure.shop.setCurrentUser = function (email){
     );
 }
 
+// Navigation
 google.appengine.secure.shop.renderLoggedInNav = function () {
     $('nav').find('#currentUserNav').attr(
         'href',
@@ -160,6 +161,8 @@ google.appengine.secure.shop.renderNav = function () {
     $('nav').find('#user_image_nav').hide();
 }
 
+
+// Loading dialog
 google.appengine.secure.shop.showLoadingDialog = function (title) {
     if (title == null) {
         title = "Loading";
@@ -176,4 +179,77 @@ google.appengine.secure.shop.hideLoadingDialog = function () {
     var dialog = document.getElementById("loading");
     dialog.style.top = "-200px";
     dialog.style.opacity = "0";
+}
+
+// Readability
+google.appengine.secure.shop.getReadableUserName = function (user) {
+    //console.log(user);
+    if (user.name != null) {
+        return user.name;
+    } else if (user.email.indexOf("@") != -1) {
+        return user.email.substr(0, user.email.indexOf("@"));
+    } else {
+        return user.email;
+    }
+}
+
+google.appengine.secure.shop.getReadableDate = function (dateString) {
+    try {
+        var date = new Date(dateString).getTime();
+        var now = new Date().getTime();
+
+        // Difference in seconds
+        var dif = Math.round((now - date) / 1000);
+        if (dif < 0) {
+            dif = dif * (-1);
+        }
+
+        var dif_days = Math.round(dif / 60 / 60 / 24);
+        var dif_hours = Math.round((dif / 60 / 60) - (dif_days * 24));
+        var dif_minutes = Math.round((dif / 60) - (dif_days * 24) - (dif_hours * 60));
+
+        var result;
+
+        if (now < date) {
+            if (dif_days > 1) {
+                result = "In " + dif_days + " days";
+            } else if (dif_days > 0) {
+                result = "Tomorrow";
+            } else {
+                if (dif_hours > 1) {
+                    result = "In " + dif_hours + " hours";
+                } else if (dif_hours > 0) {
+                    result = "In " + dif_hours + " hour";
+                } else {
+                    if (dif_minutes > 1) {
+                        result = "In " + dif_hours + " minutes";
+                    } else {
+                        result = "Now";
+                    }
+                }
+            }
+        } else {
+            if (dif_days > 1) {
+                result = dif_days + " days ago";
+            } else if (dif_days > 0) {
+                result = "Yesterday";
+            } else {
+                if (dif_hours > 1) {
+                    result = dif_hours + " hours ago";
+                } else if (dif_hours > 0) {
+                    result = dif_hours + " hour ago";
+                } else {
+                    if (dif_minutes > 1) {
+                        result = dif_minutes + " minutes ago";
+                    } else {
+                        result = "Now";
+                    }
+                }
+            }
+        }
+
+        return result;
+    } catch (ex) {
+        return dateString;
+    }
 }
