@@ -133,19 +133,38 @@ google.appengine.secure.shop.renderLoggedInNav = function () {
         'href',
         '/users/edit/'+google.appengine.secure.shop.currentUser.user_id
     );
+
     $('#signinButton').html("Logout");
+
+    if (google.appengine.secure.shop.currentUser.image_url != null) {
+        $('nav').find('#user_image_nav').attr('src', google.appengine.secure.shop.currentUser.image_url);
+    } else {
+        $('nav').find('#user_image_nav').attr('src', '../media/user_default.jpg');
+    }
+    $('nav').find('#user_image_nav').show();
+    /*
+    $('nav').find('#user_image_nav').addEventListener('click', new function () {
+        document.location = '/users/'+google.appengine.secure.shop.currentUser.user_id;
+    });
+    */
+    $('#user_image_nav')[0].addEventListener('click', function () {
+        document.location = '/users/'+google.appengine.secure.shop.currentUser.user_id;
+    });
 }
 
 google.appengine.secure.shop.renderNav = function () {
         console.log("Rendering navigation");
     var signinButton = document.querySelector('#signinButton');
     signinButton.addEventListener('click', google.appengine.secure.shop.auth);
+
+    $('nav').find('#user_image_nav').hide();
 }
 
 google.appengine.secure.shop.showLoadingDialog = function (title) {
     if (title == null) {
         title = "Loading";
     }
+    document.getElementById("content").style.opacity = "0.1";
     var dialog = document.getElementById("loading");
     dialog.style.top = "50%";
     dialog.style.opacity = "1";
@@ -153,6 +172,7 @@ google.appengine.secure.shop.showLoadingDialog = function (title) {
 }
 
 google.appengine.secure.shop.hideLoadingDialog = function () {
+    document.getElementById("content").style.opacity = "1";
     var dialog = document.getElementById("loading");
     dialog.style.top = "-200px";
     dialog.style.opacity = "0";
