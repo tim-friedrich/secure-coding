@@ -3,8 +3,10 @@ from google.appengine.ext import endpoints
 from google.appengine.ext import ndb
 from messages import ItemMessage, ItemMessageCollection, UserMessage, \
     UserMessageCollection, CommMessage, CommMessageCollection
+from backend.messages import FeedbackMessage, FeedbackMessageCollection
 
-class Item(ndb.Model):    
+
+class Item(ndb.Model):
     title = ndb.StringProperty(indexed=True)
     description = ndb.StringProperty(indexed=True)
     expiration = ndb.DateProperty(indexed=False)
@@ -42,6 +44,7 @@ class User(ndb.Model):
     tag = ndb.StringProperty(indexed=False)
     disabled = ndb.BooleanProperty(indexed=False)
     created_at = ndb.DateTimeProperty(auto_now_add=True)
+    is_admin = ndb.BooleanProperty(indexed=False, default=False)
 
     def to_message(self):
         return UserMessage(
@@ -51,7 +54,8 @@ class User(ndb.Model):
             description=self.description,
             image_url=self.image_url,
             tag=self.tag,
-            disabled=self.disabled)
+            disabled=self.disabled,
+            is_admin=self.is_admin)
 
     @classmethod
     def to_message_collection(Item, users):

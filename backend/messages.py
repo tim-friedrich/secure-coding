@@ -38,6 +38,7 @@ class UserMessage(messages.Message):
     image_url = messages.StringField(5)
     tag = messages.StringField(6)
     disabled = messages.StringField(7)
+    is_admin = messages.BooleanField(8)
 
 
 class UserMessageCollection(messages.Message):

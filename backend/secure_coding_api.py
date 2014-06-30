@@ -5,6 +5,7 @@ as well as those methods defined in an API.
 """
 from datetime import date, datetime
 import time
+from __builtin__ import long
 
 import endpoints
 from google.appengine.api.datastore_errors import BadValueError
@@ -239,12 +240,17 @@ class Comms(remote.Service):
         user = check_signed_in()
         item = Item.get_by_id(long(request.item_id))
         try:
+            receiver = []
+            for receiver_id in request.receiver.split(';'):
+                if receiver_id:
+                    receiver.append(User.get_by_id(long(receiver_id)).key)
+
             comm = Comm(
                 subject=request.subject,
-                sender=user.id(),
-                receiver=request.receiver.split(';'),
+                sender=user,
+                receiver=receiver,
                 content=request.content,
-                item_id=item,
+                item_id=str(item.key.id()),
                 item_title=item.title,
                 price=item.price)
             key = comm.put()
